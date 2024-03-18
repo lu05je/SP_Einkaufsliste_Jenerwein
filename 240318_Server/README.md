@@ -73,7 +73,8 @@ curl -X 'POST' \
       "model": "3008",
       "maxSpeedKmH": 280
     }
-  ]
+  ],
+  "hobby": "Racing"
 }'
 ```
 

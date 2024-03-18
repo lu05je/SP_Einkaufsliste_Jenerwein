@@ -11,12 +11,13 @@ public class PersonEntity {
     private ObjectId id;
     private String firstName;
     private String lastName;
-    private String language;
     private int age;
     private AddressEntity addressEntity;
     private Date createdAt = new Date();
     private Boolean insurance;
     private List<CarEntity> carEntities;
+    private String hobby;
+
 
     public PersonEntity() {
     }
@@ -24,21 +25,21 @@ public class PersonEntity {
     public PersonEntity(ObjectId id,
                         String firstName,
                         String lastName,
-                        String language,
                         int age,
                         AddressEntity addressEntity,
                         Date createdAt,
                         Boolean insurance,
-                        List<CarEntity> carEntities) {
+                        List<CarEntity> carEntities,
+                        String hobby) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.language = language;
         this.age = age;
         this.addressEntity = addressEntity;
         this.createdAt = createdAt;
         this.insurance = insurance;
         this.carEntities = carEntities;
+        this.hobby = hobby;
     }
 
     public ObjectId getId() {
@@ -65,15 +66,6 @@ public class PersonEntity {
 
     public PersonEntity setLastName(String lastName) {
         this.lastName = lastName;
-        return this;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public PersonEntity setLanguage(String language) {
-        this.language = language;
         return this;
     }
 
@@ -113,6 +105,14 @@ public class PersonEntity {
         return this;
     }
 
+    public String getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(String hobby) {
+        this.hobby = hobby;
+    }
+
     public List<CarEntity> getCars() {
         return carEntities;
     }
@@ -124,7 +124,7 @@ public class PersonEntity {
 
     @Override
     public String toString() {
-        return "Person{" + "id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", language='" + language + '\'' + ", age=" + age + ", address=" + addressEntity + ", createdAt=" + createdAt + ", insurance=" + insurance + ", cars=" + carEntities + '}';
+        return "Person{" + "id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", age=" + age + ", address=" + addressEntity + ", createdAt=" + createdAt + ", insurance=" + insurance + ", cars=" + carEntities + '}';
     }
 
     @Override
@@ -143,8 +143,7 @@ public class PersonEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, language, age, addressEntity, createdAt, insurance, carEntities);
+        return Objects.hash(id, firstName, lastName, age, addressEntity, createdAt, insurance, carEntities);
     }
-
 
 }
