@@ -1,6 +1,6 @@
 package com.mongodb.starter.services;
 
-import com.mongodb.starter.dtos.PersonDTO;
+import com.mongodb.starter.dtos.EinkaufszettelDTO;
 import com.mongodb.starter.repositories.PersonRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,32 +16,32 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonDTO save(PersonDTO PersonDTO) {
-        return new PersonDTO(personRepository.save(PersonDTO.toPersonEntity()));
+    public EinkaufszettelDTO save(EinkaufszettelDTO EinkaufszettelDTO) {
+        return new EinkaufszettelDTO(personRepository.save(EinkaufszettelDTO.toPersonEntity()));
     }
 
     @Override
-    public List<PersonDTO> saveAll(List<PersonDTO> personEntities) {
+    public List<EinkaufszettelDTO> saveAll(List<EinkaufszettelDTO> personEntities) {
         return personEntities.stream()
-                             .map(PersonDTO::toPersonEntity)
+                             .map(EinkaufszettelDTO::toPersonEntity)
                              .peek(personRepository::save)
-                             .map(PersonDTO::new)
+                             .map(EinkaufszettelDTO::new)
                              .toList();
     }
 
     @Override
-    public List<PersonDTO> findAll() {
-        return personRepository.findAll().stream().map(PersonDTO::new).toList();
+    public List<EinkaufszettelDTO> findAll() {
+        return personRepository.findAll().stream().map(EinkaufszettelDTO::new).toList();
     }
 
     @Override
-    public List<PersonDTO> findAll(List<String> ids) {
-        return personRepository.findAll(ids).stream().map(PersonDTO::new).toList();
+    public List<EinkaufszettelDTO> findAll(List<String> ids) {
+        return personRepository.findAll(ids).stream().map(EinkaufszettelDTO::new).toList();
     }
 
     @Override
-    public PersonDTO findOne(String id) {
-        return new PersonDTO(personRepository.findOne(id));
+    public EinkaufszettelDTO findOne(String id) {
+        return new EinkaufszettelDTO(personRepository.findOne(id));
     }
 
     @Override
@@ -65,13 +65,13 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonDTO update(PersonDTO PersonDTO) {
-        return new PersonDTO(personRepository.update(PersonDTO.toPersonEntity()));
+    public EinkaufszettelDTO update(EinkaufszettelDTO EinkaufszettelDTO) {
+        return new EinkaufszettelDTO(personRepository.update(EinkaufszettelDTO.toPersonEntity()));
     }
 
     @Override
-    public long update(List<PersonDTO> personEntities) {
-        return personRepository.update(personEntities.stream().map(PersonDTO::toPersonEntity).toList());
+    public long update(List<EinkaufszettelDTO> personEntities) {
+        return personRepository.update(personEntities.stream().map(EinkaufszettelDTO::toPersonEntity).toList());
     }
 
     @Override

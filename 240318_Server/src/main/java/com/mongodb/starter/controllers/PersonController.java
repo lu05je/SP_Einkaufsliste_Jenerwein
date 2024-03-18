@@ -1,6 +1,6 @@
 package com.mongodb.starter.controllers;
 
-import com.mongodb.starter.dtos.PersonDTO;
+import com.mongodb.starter.dtos.EinkaufszettelDTO;
 import com.mongodb.starter.services.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,30 +24,30 @@ public class PersonController {
 
     @PostMapping("person")
     @ResponseStatus(HttpStatus.CREATED)
-    public PersonDTO postPerson(@RequestBody PersonDTO PersonDTO) {
-        return personService.save(PersonDTO);
+    public EinkaufszettelDTO postPerson(@RequestBody EinkaufszettelDTO EinkaufszettelDTO) {
+        return personService.save(EinkaufszettelDTO);
     }
 
     @PostMapping("persons")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<PersonDTO> postPersons(@RequestBody List<PersonDTO> personEntities) {
+    public List<EinkaufszettelDTO> postPersons(@RequestBody List<EinkaufszettelDTO> personEntities) {
         return personService.saveAll(personEntities);
     }
 
     @GetMapping("persons")
-    public List<PersonDTO> getPersons() {
+    public List<EinkaufszettelDTO> getPersons() {
         return personService.findAll();
     }
 
     @GetMapping("person/{id}")
-    public ResponseEntity<PersonDTO> getPerson(@PathVariable String id) {
-        PersonDTO PersonDTO = personService.findOne(id);
-        if (PersonDTO == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.ok(PersonDTO);
+    public ResponseEntity<EinkaufszettelDTO> getPerson(@PathVariable String id) {
+        EinkaufszettelDTO EinkaufszettelDTO = personService.findOne(id);
+        if (EinkaufszettelDTO == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.ok(EinkaufszettelDTO);
     }
 
     @GetMapping("persons/{ids}")
-    public List<PersonDTO> getPersons(@PathVariable String ids) {
+    public List<EinkaufszettelDTO> getPersons(@PathVariable String ids) {
         List<String> listIds = List.of(ids.split(","));
         return personService.findAll(listIds);
     }
@@ -74,12 +74,12 @@ public class PersonController {
     }
 
     @PutMapping("person")
-    public PersonDTO putPerson(@RequestBody PersonDTO PersonDTO) {
-        return personService.update(PersonDTO);
+    public EinkaufszettelDTO putPerson(@RequestBody EinkaufszettelDTO EinkaufszettelDTO) {
+        return personService.update(EinkaufszettelDTO);
     }
 
     @PutMapping("persons")
-    public Long putPerson(@RequestBody List<PersonDTO> personEntities) {
+    public Long putPerson(@RequestBody List<EinkaufszettelDTO> personEntities) {
         return personService.update(personEntities);
     }
 

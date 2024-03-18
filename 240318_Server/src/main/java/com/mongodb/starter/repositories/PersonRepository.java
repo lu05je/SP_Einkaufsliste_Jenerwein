@@ -1,6 +1,6 @@
 package com.mongodb.starter.repositories;
 
-import com.mongodb.starter.models.PersonEntity;
+import com.mongodb.starter.models.EinkaufszettelEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -8,15 +8,15 @@ import java.util.List;
 @Repository
 public interface PersonRepository {
 
-    PersonEntity save(PersonEntity personEntity);
+    EinkaufszettelEntity save(EinkaufszettelEntity einkaufszettelEntity);
 
-    List<PersonEntity> saveAll(List<PersonEntity> personEntities);
+    List<EinkaufszettelEntity> saveAll(List<EinkaufszettelEntity> personEntities);
 
-    List<PersonEntity> findAll();
+    List<EinkaufszettelEntity> findAll();
 
-    List<PersonEntity> findAll(List<String> ids);
+    List<EinkaufszettelEntity> findAll(List<String> ids);
 
-    PersonEntity findOne(String id);
+    EinkaufszettelEntity findOne(String id);
 
     long count();
 
@@ -26,9 +26,9 @@ public interface PersonRepository {
 
     long deleteAll();
 
-    PersonEntity update(PersonEntity personEntity);
+    EinkaufszettelEntity update(EinkaufszettelEntity einkaufszettelEntity);
 
-    long update(List<PersonEntity> personEntities);
+    long update(List<EinkaufszettelEntity> personEntities);
 
     double getAverageAge();
 

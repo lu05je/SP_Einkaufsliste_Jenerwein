@@ -9,8 +9,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.model.ReplaceOneModel;
-import com.mongodb.starter.dtos.AverageAgeDTO;
-import com.mongodb.starter.models.PersonEntity;
+import com.mongodb.starter.models.EinkaufszettelEntity;
 import jakarta.annotation.PostConstruct;
 import org.bson.BsonDocument;
 import org.bson.BsonNull;
@@ -38,7 +37,7 @@ public class MongoDBPersonRepository implements PersonRepository {
                                                                            .writeConcern(WriteConcern.MAJORITY)
                                                                            .build();
     private final MongoClient client;
-    private MongoCollection<PersonEntity> personCollection;
+    private MongoCollection<EinkaufszettelEntity> personCollection;
 
     public MongoDBPersonRepository(MongoClient mongoClient) {
         this.client = mongoClient;
@@ -46,18 +45,18 @@ public class MongoDBPersonRepository implements PersonRepository {
 
     @PostConstruct
     void init() {
-        personCollection = client.getDatabase("test").getCollection("persons", PersonEntity.class);
+        personCollection = client.getDatabase("test").getCollection("persons", EinkaufszettelEntity.class);
     }
 
     @Override
-    public PersonEntity save(PersonEntity personEntity) {
-        personEntity.setId(new ObjectId());
-        personCollection.insertOne(personEntity);
-        return personEntity;
+    public EinkaufszettelEntity save(EinkaufszettelEntity einkaufszettelEntity) {
+        einkaufszettelEntity.setId(new ObjectId());
+        personCollection.insertOne(einkaufszettelEntity);
+        return einkaufszettelEntity;
     }
 
     @Override
-    public List<PersonEntity> saveAll(List<PersonEntity> personEntities) {
+    public List<EinkaufszettelEntity> saveAll(List<EinkaufszettelEntity> personEntities) {
         try (ClientSession clientSession = client.startSession()) {
             return clientSession.withTransaction(() -> {
                 personEntities.forEach(p -> p.setId(new ObjectId()));
@@ -68,17 +67,17 @@ public class MongoDBPersonRepository implements PersonRepository {
     }
 
     @Override
-    public List<PersonEntity> findAll() {
+    public List<EinkaufszettelEntity> findAll() {
         return personCollection.find().into(new ArrayList<>());
     }
 
     @Override
-    public List<PersonEntity> findAll(List<String> ids) {
+    public List<EinkaufszettelEntity> findAll(List<String> ids) {
         return personCollection.find(in("_id", mapToObjectIds(ids))).into(new ArrayList<>());
     }
 
     @Override
-    public PersonEntity findOne(String id) {
+    public EinkaufszettelEntity findOne(String id) {
         return personCollection.find(eq("_id", new ObjectId(id))).first();
     }
 
@@ -110,14 +109,14 @@ public class MongoDBPersonRepository implements PersonRepository {
     }
 
     @Override
-    public PersonEntity update(PersonEntity personEntity) {
+    public EinkaufszettelEntity update(EinkaufszettelEntity einkaufszettelEntity) {
         FindOneAndReplaceOptions options = new FindOneAndReplaceOptions().returnDocument(AFTER);
-        return personCollection.findOneAndReplace(eq("_id", personEntity.getId()), personEntity, options);
+        return personCollection.findOneAndReplace(eq("_id", einkaufszettelEntity.getId()), einkaufszettelEntity, options);
     }
 
     @Override
-    public long update(List<PersonEntity> personEntities) {
-        List<ReplaceOneModel<PersonEntity>> writes = personEntities.stream()
+    public long update(List<EinkaufszettelEntity> personEntities) {
+        List<ReplaceOneModel<EinkaufszettelEntity>> writes = personEntities.stream()
                                                                    .map(p -> new ReplaceOneModel<>(eq("_id", p.getId()),
                                                                                                    p))
                                                                    .toList();

@@ -1,9 +1,7 @@
 package com.mongodb.starter;
 
-import com.mongodb.starter.dtos.PersonDTO;
-import com.mongodb.starter.models.AddressEntity;
-import com.mongodb.starter.models.CarEntity;
-import com.mongodb.starter.models.PersonEntity;
+import com.mongodb.starter.dtos.EinkaufszettelDTO;
+import com.mongodb.starter.models.EinkaufszettelEntity;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +10,8 @@ import java.util.List;
 @Component
 class TestHelper {
 
-    PersonEntity getMaxEntity() {
-        return new PersonEntity().setFirstName("Maxime")
+    EinkaufszettelEntity getMaxEntity() {
+        return new EinkaufszettelEntity().setFirstName("Maxime")
                                  .setLastName("Beugnet")
                                  .setAddress(new AddressEntity().setCity("Paris")
                                                                 .setCountry("France")
@@ -27,8 +25,8 @@ class TestHelper {
                                                                  .setModel("SF90 Stradale")));
     }
 
-    PersonEntity getAlexEntity() {
-        return new PersonEntity().setFirstName("Alex")
+    EinkaufszettelEntity getAlexEntity() {
+        return new EinkaufszettelEntity().setFirstName("Alex")
                                  .setLastName("Beugnet")
                                  .setAddress(new AddressEntity().setCity("Toulouse")
                                                                 .setCountry("France")
@@ -42,27 +40,27 @@ class TestHelper {
                                                                  .setModel("Project One")));
     }
 
-    PersonDTO getMaxDTO() {
-        return new PersonDTO(getMaxEntity());
+    EinkaufszettelDTO getMaxDTO() {
+        return new EinkaufszettelDTO(getMaxEntity());
     }
 
-    public PersonDTO getMaxDTOWithId(ObjectId id) {
-        return new PersonDTO(getMaxEntity().setId(id));
+    public EinkaufszettelDTO getMaxDTOWithId(ObjectId id) {
+        return new EinkaufszettelDTO(getMaxEntity().setId(id));
     }
 
-    PersonDTO getAlexDTO() {
-        return new PersonDTO(getAlexEntity());
+    EinkaufszettelDTO getAlexDTO() {
+        return new EinkaufszettelDTO(getAlexEntity());
     }
 
-    PersonDTO getAlexDTOWithId(ObjectId id) {
-        return new PersonDTO(getAlexEntity().setId(id));
+    EinkaufszettelDTO getAlexDTOWithId(ObjectId id) {
+        return new EinkaufszettelDTO(getAlexEntity().setId(id));
     }
 
-    List<PersonEntity> getListMaxAlexEntity() {
+    List<EinkaufszettelEntity> getListMaxAlexEntity() {
         return List.of(getMaxEntity(), getAlexEntity());
     }
 
-    List<PersonDTO> getListMaxAlexDTO() {
+    List<EinkaufszettelDTO> getListMaxAlexDTO() {
         return List.of(getMaxDTO(), getAlexDTO());
     }
 }

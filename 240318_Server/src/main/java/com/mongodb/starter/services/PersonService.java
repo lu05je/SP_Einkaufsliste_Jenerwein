@@ -1,21 +1,21 @@
 package com.mongodb.starter.services;
 
 
-import com.mongodb.starter.dtos.PersonDTO;
+import com.mongodb.starter.dtos.EinkaufszettelDTO;
 
 import java.util.List;
 
 public interface PersonService {
 
-    PersonDTO save(PersonDTO PersonDTO);
+    EinkaufszettelDTO save(EinkaufszettelDTO EinkaufszettelDTO);
 
-    List<PersonDTO> saveAll(List<PersonDTO> personEntities);
+    List<EinkaufszettelDTO> saveAll(List<EinkaufszettelDTO> personEntities);
 
-    List<PersonDTO> findAll();
+    List<EinkaufszettelDTO> findAll();
 
-    List<PersonDTO> findAll(List<String> ids);
+    List<EinkaufszettelDTO> findAll(List<String> ids);
 
-    PersonDTO findOne(String id);
+    EinkaufszettelDTO findOne(String id);
 
     long count();
 
@@ -25,9 +25,9 @@ public interface PersonService {
 
     long deleteAll();
 
-    PersonDTO update(PersonDTO PersonDTO);
+    EinkaufszettelDTO update(EinkaufszettelDTO EinkaufszettelDTO);
 
-    long update(List<PersonDTO> personEntities);
+    long update(List<EinkaufszettelDTO> personEntities);
 
     double getAverageAge();
     

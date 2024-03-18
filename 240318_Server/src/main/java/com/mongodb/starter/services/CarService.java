@@ -1,8 +1,5 @@
 package com.mongodb.starter.services;
 
-import com.mongodb.starter.dtos.CarDTO;
-import com.mongodb.starter.dtos.PersonDTO;
-
 import java.util.List;
 
 public interface CarService {

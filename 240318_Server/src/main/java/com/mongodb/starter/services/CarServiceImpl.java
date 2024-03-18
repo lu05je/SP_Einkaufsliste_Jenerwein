@@ -1,7 +1,5 @@
 package com.mongodb.starter.services;
 
-import com.mongodb.starter.dtos.CarDTO;
-import com.mongodb.starter.repositories.CarRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

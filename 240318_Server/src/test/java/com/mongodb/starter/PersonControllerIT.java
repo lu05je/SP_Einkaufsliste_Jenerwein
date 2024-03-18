@@ -2,8 +2,8 @@ package com.mongodb.starter;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.starter.dtos.PersonDTO;
-import com.mongodb.starter.models.PersonEntity;
+import com.mongodb.starter.dtos.EinkaufszettelDTO;
+import com.mongodb.starter.models.EinkaufszettelEntity;
 import com.mongodb.starter.repositories.PersonRepository;
 import jakarta.annotation.PostConstruct;
 import org.bson.types.ObjectId;
@@ -58,13 +58,13 @@ public class PersonControllerIT {
     void postPerson() {
         // GIVEN
         // WHEN
-        ResponseEntity<PersonDTO> result = rest.postForEntity(URL + "/person", testHelper.getMaxDTO(), PersonDTO.class);
+        ResponseEntity<EinkaufszettelDTO> result = rest.postForEntity(URL + "/person", testHelper.getMaxDTO(), EinkaufszettelDTO.class);
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        PersonDTO personDTOResult = result.getBody();
-        assertThat(personDTOResult).isNotNull();
-        assertThat(personDTOResult.id()).isNotNull();
-        assertThat(personDTOResult).usingRecursiveComparison()
+        EinkaufszettelDTO einkaufszettelDTOResult = result.getBody();
+        assertThat(einkaufszettelDTOResult).isNotNull();
+        assertThat(einkaufszettelDTOResult.id()).isNotNull();
+        assertThat(einkaufszettelDTOResult).usingRecursiveComparison()
                                    .ignoringFields("id", "createdAt")
                                    .isEqualTo(testHelper.getMaxDTO());
     }
@@ -74,8 +74,8 @@ public class PersonControllerIT {
     void postPersons() {
         // GIVEN
         // WHEN
-        HttpEntity<List<PersonDTO>> body = new HttpEntity<>(testHelper.getListMaxAlexDTO());
-        ResponseEntity<List<PersonDTO>> response = rest.exchange(URL + "/persons", HttpMethod.POST, body,
+        HttpEntity<List<EinkaufszettelDTO>> body = new HttpEntity<>(testHelper.getListMaxAlexDTO());
+        ResponseEntity<List<EinkaufszettelDTO>> response = rest.exchange(URL + "/persons", HttpMethod.POST, body,
                                                                  new ParameterizedTypeReference<>() {
                                                                  });
         // THEN
@@ -88,14 +88,14 @@ public class PersonControllerIT {
     @Test
     void getPersons() {
         // GIVEN
-        List<PersonEntity> personEntities = personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        List<EinkaufszettelEntity> personEntities = personRepository.saveAll(testHelper.getListMaxAlexEntity());
         // WHEN
-        ResponseEntity<List<PersonDTO>> result = rest.exchange(URL + "/persons", HttpMethod.GET, null,
+        ResponseEntity<List<EinkaufszettelDTO>> result = rest.exchange(URL + "/persons", HttpMethod.GET, null,
                                                                new ParameterizedTypeReference<>() {
                                                                });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        List<PersonDTO> expected = List.of(testHelper.getMaxDTOWithId(personEntities.get(0).getId()),
+        List<EinkaufszettelDTO> expected = List.of(testHelper.getMaxDTOWithId(personEntities.get(0).getId()),
                                            testHelper.getAlexDTOWithId(personEntities.get(1).getId()));
         assertThat(result.getBody()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id", "createdAt")
                                     .containsExactlyInAnyOrderElementsOf(expected);
@@ -105,10 +105,10 @@ public class PersonControllerIT {
     @Test
     void getPersonById() {
         // GIVEN
-        PersonEntity personInserted = personRepository.save(testHelper.getAlexEntity());
+        EinkaufszettelEntity personInserted = personRepository.save(testHelper.getAlexEntity());
         ObjectId idInserted = personInserted.getId();
         // WHEN
-        ResponseEntity<PersonDTO> result = rest.getForEntity(URL + "/person/" + idInserted, PersonDTO.class);
+        ResponseEntity<EinkaufszettelDTO> result = rest.getForEntity(URL + "/person/" + idInserted, EinkaufszettelDTO.class);
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).usingRecursiveComparison()
@@ -120,11 +120,11 @@ public class PersonControllerIT {
     @Test
     void getPersonsByIds() {
         // GIVEN
-        List<PersonEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
-        List<String> idsInserted = personsInserted.stream().map(PersonEntity::getId).map(ObjectId::toString).toList();
+        List<EinkaufszettelEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        List<String> idsInserted = personsInserted.stream().map(EinkaufszettelEntity::getId).map(ObjectId::toString).toList();
         // WHEN
         String url = URL + "/persons/" + String.join(",", idsInserted);
-        ResponseEntity<List<PersonDTO>> result = rest.exchange(url, HttpMethod.GET, null,
+        ResponseEntity<List<EinkaufszettelDTO>> result = rest.exchange(url, HttpMethod.GET, null,
                                                                new ParameterizedTypeReference<>() {
                                                                });
         // THEN
@@ -149,7 +149,7 @@ public class PersonControllerIT {
     @Test
     void deletePersonById() {
         // GIVEN
-        PersonEntity personInserted = personRepository.save(testHelper.getMaxEntity());
+        EinkaufszettelEntity personInserted = personRepository.save(testHelper.getMaxEntity());
         String idInserted = personInserted.getId().toHexString();
         // WHEN
         ResponseEntity<Long> result = rest.exchange(URL + "/person/" + idInserted, HttpMethod.DELETE, null,
@@ -165,8 +165,8 @@ public class PersonControllerIT {
     @Test
     void deletePersonsByIds() {
         // GIVEN
-        List<PersonEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
-        List<String> idsInserted = personsInserted.stream().map(PersonEntity::getId).map(ObjectId::toString).toList();
+        List<EinkaufszettelEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        List<String> idsInserted = personsInserted.stream().map(EinkaufszettelEntity::getId).map(ObjectId::toString).toList();
         // WHEN
         ResponseEntity<Long> result = rest.exchange(URL + "/persons/" + String.join(",", idsInserted),
                                                     HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {
@@ -196,18 +196,18 @@ public class PersonControllerIT {
     @Test
     void putPerson() {
         // GIVEN
-        PersonEntity personInserted = personRepository.save(testHelper.getMaxEntity());
+        EinkaufszettelEntity personInserted = personRepository.save(testHelper.getMaxEntity());
         // WHEN
         personInserted.setAge(32);
         personInserted.setInsurance(false);
-        HttpEntity<PersonDTO> body = new HttpEntity<>(new PersonDTO(personInserted));
-        ResponseEntity<PersonDTO> result = rest.exchange(URL + "/person", HttpMethod.PUT, body,
+        HttpEntity<EinkaufszettelDTO> body = new HttpEntity<>(new EinkaufszettelDTO(personInserted));
+        ResponseEntity<EinkaufszettelDTO> result = rest.exchange(URL + "/person", HttpMethod.PUT, body,
                                                          new ParameterizedTypeReference<>() {
                                                          });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(
-                new PersonDTO(personRepository.findOne(personInserted.getId().toString())));
+                new EinkaufszettelDTO(personRepository.findOne(personInserted.getId().toString())));
         assertThat(result.getBody().age()).isEqualTo(32);
         assertThat(result.getBody().insurance()).isFalse();
         assertThat(personRepository.count()).isEqualTo(1L);
@@ -217,21 +217,21 @@ public class PersonControllerIT {
     @Test
     void putPersons() {
         // GIVEN
-        List<PersonEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        List<EinkaufszettelEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
         // WHEN
         personsInserted.get(0).setAge(32);
         personsInserted.get(0).setInsurance(false);
         personsInserted.get(1).setAge(28);
         personsInserted.get(1).setInsurance(true);
-        HttpEntity<List<PersonDTO>> body = new HttpEntity<>(personsInserted.stream().map(PersonDTO::new).toList());
+        HttpEntity<List<EinkaufszettelDTO>> body = new HttpEntity<>(personsInserted.stream().map(EinkaufszettelDTO::new).toList());
         ResponseEntity<Long> result = rest.exchange(URL + "/persons", HttpMethod.PUT, body,
                                                     new ParameterizedTypeReference<>() {
                                                     });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(2L);
-        PersonEntity max = personRepository.findOne(personsInserted.get(0).getId().toString());
-        PersonEntity alex = personRepository.findOne(personsInserted.get(1).getId().toString());
+        EinkaufszettelEntity max = personRepository.findOne(personsInserted.get(0).getId().toString());
+        EinkaufszettelEntity alex = personRepository.findOne(personsInserted.get(1).getId().toString());
         assertThat(max.getAge()).isEqualTo(32);
         assertThat(max.getInsurance()).isFalse();
         assertThat(alex.getAge()).isEqualTo(28);
