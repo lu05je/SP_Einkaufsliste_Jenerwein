@@ -45,7 +45,7 @@ public class MongoDBProduktRepository implements ProduktRepository {
 
     @PostConstruct
     void init() {
-        personCollection = client.getDatabase("test").getCollection("persons", ProduktEntity.class);
+        personCollection = client.getDatabase("pos").getCollection("einkaufszettel", ProduktEntity.class);
     }
 
     @Override
