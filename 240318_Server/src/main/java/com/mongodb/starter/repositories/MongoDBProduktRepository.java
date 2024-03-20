@@ -9,7 +9,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.model.ReplaceOneModel;
-import com.mongodb.starter.models.EinkaufszettelEntity;
+import com.mongodb.starter.models.ProduktEntity;
 import jakarta.annotation.PostConstruct;
 import org.bson.BsonDocument;
 import org.bson.BsonNull;
@@ -29,7 +29,7 @@ import static com.mongodb.client.model.Projections.excludeId;
 import static com.mongodb.client.model.ReturnDocument.AFTER;
 
 @Repository
-public class MongoDBPersonRepository implements PersonRepository {
+public class MongoDBProduktRepository implements ProduktRepository {
 
     private static final TransactionOptions txnOptions = TransactionOptions.builder()
                                                                            .readPreference(ReadPreference.primary())
@@ -37,26 +37,26 @@ public class MongoDBPersonRepository implements PersonRepository {
                                                                            .writeConcern(WriteConcern.MAJORITY)
                                                                            .build();
     private final MongoClient client;
-    private MongoCollection<EinkaufszettelEntity> personCollection;
+    private MongoCollection<ProduktEntity> personCollection;
 
-    public MongoDBPersonRepository(MongoClient mongoClient) {
+    public MongoDBProduktRepository(MongoClient mongoClient) {
         this.client = mongoClient;
     }
 
     @PostConstruct
     void init() {
-        personCollection = client.getDatabase("test").getCollection("persons", EinkaufszettelEntity.class);
+        personCollection = client.getDatabase("test").getCollection("persons", ProduktEntity.class);
     }
 
     @Override
-    public EinkaufszettelEntity save(EinkaufszettelEntity einkaufszettelEntity) {
-        einkaufszettelEntity.setId(new ObjectId());
-        personCollection.insertOne(einkaufszettelEntity);
-        return einkaufszettelEntity;
+    public ProduktEntity save(ProduktEntity produktEntity) {
+        produktEntity.setId(new ObjectId());
+        personCollection.insertOne(produktEntity);
+        return produktEntity;
     }
 
     @Override
-    public List<EinkaufszettelEntity> saveAll(List<EinkaufszettelEntity> personEntities) {
+    public List<ProduktEntity> saveAll(List<ProduktEntity> personEntities) {
         try (ClientSession clientSession = client.startSession()) {
             return clientSession.withTransaction(() -> {
                 personEntities.forEach(p -> p.setId(new ObjectId()));
@@ -67,17 +67,17 @@ public class MongoDBPersonRepository implements PersonRepository {
     }
 
     @Override
-    public List<EinkaufszettelEntity> findAll() {
+    public List<ProduktEntity> findAll() {
         return personCollection.find().into(new ArrayList<>());
     }
 
     @Override
-    public List<EinkaufszettelEntity> findAll(List<String> ids) {
+    public List<ProduktEntity> findAll(List<String> ids) {
         return personCollection.find(in("_id", mapToObjectIds(ids))).into(new ArrayList<>());
     }
 
     @Override
-    public EinkaufszettelEntity findOne(String id) {
+    public ProduktEntity findOne(String id) {
         return personCollection.find(eq("_id", new ObjectId(id))).first();
     }
 
@@ -109,14 +109,14 @@ public class MongoDBPersonRepository implements PersonRepository {
     }
 
     @Override
-    public EinkaufszettelEntity update(EinkaufszettelEntity einkaufszettelEntity) {
+    public ProduktEntity update(ProduktEntity produktEntity) {
         FindOneAndReplaceOptions options = new FindOneAndReplaceOptions().returnDocument(AFTER);
-        return personCollection.findOneAndReplace(eq("_id", einkaufszettelEntity.getId()), einkaufszettelEntity, options);
+        return personCollection.findOneAndReplace(eq("_id", produktEntity.getId()), produktEntity, options);
     }
 
     @Override
-    public long update(List<EinkaufszettelEntity> personEntities) {
-        List<ReplaceOneModel<EinkaufszettelEntity>> writes = personEntities.stream()
+    public long update(List<ProduktEntity> personEntities) {
+        List<ReplaceOneModel<ProduktEntity>> writes = personEntities.stream()
                                                                    .map(p -> new ReplaceOneModel<>(eq("_id", p.getId()),
                                                                                                    p))
                                                                    .toList();
@@ -124,12 +124,6 @@ public class MongoDBPersonRepository implements PersonRepository {
             return clientSession.withTransaction(
                     () -> personCollection.bulkWrite(clientSession, writes).getModifiedCount(), txnOptions);
         }
-    }
-
-    @Override
-    public double getAverageAge() {
-        List<Bson> pipeline = List.of(group(new BsonNull(), avg("averageAge", "$age")), project(excludeId()));
-        return personCollection.aggregate(pipeline, AverageAgeDTO.class).first().averageAge();
     }
 
     private List<ObjectId> mapToObjectIds(List<String> ids) {

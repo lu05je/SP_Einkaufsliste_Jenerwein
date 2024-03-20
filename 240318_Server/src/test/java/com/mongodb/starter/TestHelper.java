@@ -1,7 +1,7 @@
 package com.mongodb.starter;
 
-import com.mongodb.starter.dtos.EinkaufszettelDTO;
-import com.mongodb.starter.models.EinkaufszettelEntity;
+import com.mongodb.starter.dtos.ProduktDTO;
+import com.mongodb.starter.models.ProduktEntity;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
@@ -10,57 +10,37 @@ import java.util.List;
 @Component
 class TestHelper {
 
-    EinkaufszettelEntity getMaxEntity() {
-        return new EinkaufszettelEntity().setFirstName("Maxime")
-                                 .setLastName("Beugnet")
-                                 .setAddress(new AddressEntity().setCity("Paris")
-                                                                .setCountry("France")
-                                                                .setNumber(1)
-                                                                .setPostcode("12345")
-                                                                .setStreet("The Best Street"))
-                                 .setAge(31)
-                                 .setInsurance(true)
-                                 .setCars(List.of(new CarEntity().setBrand("Ferrari")
-                                                                 .setMaxSpeedKmH(339f)
-                                                                 .setModel("SF90 Stradale")));
+    ProduktEntity getJogurtEntity() {
+        return new ProduktEntity().setAnzahl(3)
+                                 .setProdukt("Jogurt");
     }
 
-    EinkaufszettelEntity getAlexEntity() {
-        return new EinkaufszettelEntity().setFirstName("Alex")
-                                 .setLastName("Beugnet")
-                                 .setAddress(new AddressEntity().setCity("Toulouse")
-                                                                .setCountry("France")
-                                                                .setNumber(2)
-                                                                .setPostcode("54321")
-                                                                .setStreet("Another Street"))
-                                 .setAge(27)
-                                 .setInsurance(false)
-                                 .setCars(List.of(new CarEntity().setBrand("Mercedes")
-                                                                 .setMaxSpeedKmH(355f)
-                                                                 .setModel("Project One")));
+    ProduktEntity getTomateEntity() {
+        return new ProduktEntity().setAnzahl(1)
+                                 .setProdukt("Tomate");
     }
 
-    EinkaufszettelDTO getMaxDTO() {
-        return new EinkaufszettelDTO(getMaxEntity());
+    ProduktDTO getJogurtDTO() {
+        return new ProduktDTO(getJogurtEntity());
     }
 
-    public EinkaufszettelDTO getMaxDTOWithId(ObjectId id) {
-        return new EinkaufszettelDTO(getMaxEntity().setId(id));
+    public ProduktDTO getJogurtDTOWithId(ObjectId id) {
+        return new ProduktDTO(getJogurtEntity().setId(id));
     }
 
-    EinkaufszettelDTO getAlexDTO() {
-        return new EinkaufszettelDTO(getAlexEntity());
+    ProduktDTO getTomateDTO() {
+        return new ProduktDTO(getTomateEntity());
     }
 
-    EinkaufszettelDTO getAlexDTOWithId(ObjectId id) {
-        return new EinkaufszettelDTO(getAlexEntity().setId(id));
+    ProduktDTO getTomateDTOWithId(ObjectId id) {
+        return new ProduktDTO(getTomateEntity().setId(id));
     }
 
-    List<EinkaufszettelEntity> getListMaxAlexEntity() {
-        return List.of(getMaxEntity(), getAlexEntity());
+    List<ProduktEntity> getListJogurtTomateEntity() {
+        return List.of(getJogurtEntity(), getTomateEntity());
     }
 
-    List<EinkaufszettelDTO> getListMaxAlexDTO() {
-        return List.of(getMaxDTO(), getAlexDTO());
+    List<ProduktDTO> getListJogurtTomateDTO() {
+        return List.of(getJogurtDTO(), getTomateDTO());
     }
 }

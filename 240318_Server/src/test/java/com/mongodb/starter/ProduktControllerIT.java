@@ -2,9 +2,9 @@ package com.mongodb.starter;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.starter.dtos.EinkaufszettelDTO;
-import com.mongodb.starter.models.EinkaufszettelEntity;
-import com.mongodb.starter.repositories.PersonRepository;
+import com.mongodb.starter.dtos.ProduktDTO;
+import com.mongodb.starter.models.ProduktEntity;
+import com.mongodb.starter.repositories.ProduktRepository;
 import jakarta.annotation.PostConstruct;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
@@ -26,20 +26,20 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PersonControllerIT {
+public class ProduktControllerIT {
 
     @LocalServerPort
     private int port;
     @Autowired
     private TestRestTemplate rest;
     @Autowired
-    private PersonRepository personRepository;
+    private ProduktRepository produktRepository;
     @Autowired
     private TestHelper testHelper;
     private String URL;
 
     @Autowired
-    PersonControllerIT(MongoClient mongoClient) {
+    ProduktControllerIT(MongoClient mongoClient) {
         createPersonCollectionIfNotPresent(mongoClient);
     }
 
@@ -50,200 +50,200 @@ public class PersonControllerIT {
 
     @AfterEach
     void tearDown() {
-        personRepository.deleteAll();
+        produktRepository.deleteAll();
     }
 
-    @DisplayName("POST /person with 1 person")
+    @DisplayName("POST /produkt with 1 produkt")
     @Test
-    void postPerson() {
+    void postProdukt() {
         // GIVEN
         // WHEN
-        ResponseEntity<EinkaufszettelDTO> result = rest.postForEntity(URL + "/person", testHelper.getMaxDTO(), EinkaufszettelDTO.class);
+        ResponseEntity<ProduktDTO> result = rest.postForEntity(URL + "/produkt", testHelper.getJogurtDTO(), ProduktDTO.class);
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        EinkaufszettelDTO einkaufszettelDTOResult = result.getBody();
-        assertThat(einkaufszettelDTOResult).isNotNull();
-        assertThat(einkaufszettelDTOResult.id()).isNotNull();
-        assertThat(einkaufszettelDTOResult).usingRecursiveComparison()
+        ProduktDTO produktDTOResult = result.getBody();
+        assertThat(produktDTOResult).isNotNull();
+        assertThat(produktDTOResult.id()).isNotNull();
+        assertThat(produktDTOResult).usingRecursiveComparison()
                                    .ignoringFields("id", "createdAt")
-                                   .isEqualTo(testHelper.getMaxDTO());
+                                   .isEqualTo(testHelper.getJogurtDTO());
     }
 
-    @DisplayName("POST /persons with 2 person")
+    @DisplayName("POST /produkte with 2 produkte")
     @Test
-    void postPersons() {
+    void postProdukte() {
         // GIVEN
         // WHEN
-        HttpEntity<List<EinkaufszettelDTO>> body = new HttpEntity<>(testHelper.getListMaxAlexDTO());
-        ResponseEntity<List<EinkaufszettelDTO>> response = rest.exchange(URL + "/persons", HttpMethod.POST, body,
+        HttpEntity<List<ProduktDTO>> body = new HttpEntity<>(testHelper.getListJogurtTomateDTO());
+        ResponseEntity<List<ProduktDTO>> response = rest.exchange(URL + "/produkte", HttpMethod.POST, body,
                                                                  new ParameterizedTypeReference<>() {
                                                                  });
         // THEN
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).usingElementComparatorIgnoringFields("id", "createdAt")
-                                      .containsExactlyInAnyOrderElementsOf(testHelper.getListMaxAlexDTO());
+                                      .containsExactlyInAnyOrderElementsOf(testHelper.getListJogurtTomateDTO());
     }
 
-    @DisplayName("GET /persons with 2 persons")
+    @DisplayName("GET /produkte with 2 produkte")
     @Test
-    void getPersons() {
+    void getProdukte() {
         // GIVEN
-        List<EinkaufszettelEntity> personEntities = personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        List<ProduktEntity> personEntities = produktRepository.saveAll(testHelper.getListJogurtTomateEntity());
         // WHEN
-        ResponseEntity<List<EinkaufszettelDTO>> result = rest.exchange(URL + "/persons", HttpMethod.GET, null,
+        ResponseEntity<List<ProduktDTO>> result = rest.exchange(URL + "/produkte", HttpMethod.GET, null,
                                                                new ParameterizedTypeReference<>() {
                                                                });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        List<EinkaufszettelDTO> expected = List.of(testHelper.getMaxDTOWithId(personEntities.get(0).getId()),
-                                           testHelper.getAlexDTOWithId(personEntities.get(1).getId()));
+        List<ProduktDTO> expected = List.of(testHelper.getJogurtDTOWithId(personEntities.get(0).getId()),
+                                           testHelper.getTomateDTOWithId(personEntities.get(1).getId()));
         assertThat(result.getBody()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id", "createdAt")
                                     .containsExactlyInAnyOrderElementsOf(expected);
     }
 
-    @DisplayName("GET /person/{id}")
+    @DisplayName("GET /produkt/{id}")
     @Test
-    void getPersonById() {
+    void getProduktById() {
         // GIVEN
-        EinkaufszettelEntity personInserted = personRepository.save(testHelper.getAlexEntity());
+        ProduktEntity personInserted = produktRepository.save(testHelper.getTomateEntity());
         ObjectId idInserted = personInserted.getId();
         // WHEN
-        ResponseEntity<EinkaufszettelDTO> result = rest.getForEntity(URL + "/person/" + idInserted, EinkaufszettelDTO.class);
+        ResponseEntity<ProduktDTO> result = rest.getForEntity(URL + "/produkt/" + idInserted, ProduktDTO.class);
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).usingRecursiveComparison()
                                     .ignoringFields("createdAt")
-                                    .isEqualTo(testHelper.getAlexDTOWithId(idInserted));
+                                    .isEqualTo(testHelper.getTomateDTOWithId(idInserted));
     }
 
-    @DisplayName("GET /persons/{ids}")
+    @DisplayName("GET /produkte/{ids}")
     @Test
-    void getPersonsByIds() {
+    void getProdukteByIds() {
         // GIVEN
-        List<EinkaufszettelEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
-        List<String> idsInserted = personsInserted.stream().map(EinkaufszettelEntity::getId).map(ObjectId::toString).toList();
+        List<ProduktEntity> personsInserted = produktRepository.saveAll(testHelper.getListJogurtTomateEntity());
+        List<String> idsInserted = personsInserted.stream().map(ProduktEntity::getId).map(ObjectId::toString).toList();
         // WHEN
-        String url = URL + "/persons/" + String.join(",", idsInserted);
-        ResponseEntity<List<EinkaufszettelDTO>> result = rest.exchange(url, HttpMethod.GET, null,
+        String url = URL + "/produkte/" + String.join(",", idsInserted);
+        ResponseEntity<List<ProduktDTO>> result = rest.exchange(url, HttpMethod.GET, null,
                                                                new ParameterizedTypeReference<>() {
                                                                });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id", "createdAt")
-                                    .containsExactlyInAnyOrderElementsOf(testHelper.getListMaxAlexDTO());
+                                    .containsExactlyInAnyOrderElementsOf(testHelper.getListJogurtTomateDTO());
     }
 
-    @DisplayName("GET /persons/count")
+    @DisplayName("GET /produkte/count")
     @Test
     void getCount() {
         // GIVEN
-        personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        produktRepository.saveAll(testHelper.getListJogurtTomateEntity());
         // WHEN
-        ResponseEntity<Long> result = rest.getForEntity(URL + "/persons/count", Long.class);
+        ResponseEntity<Long> result = rest.getForEntity(URL + "/produkte/count", Long.class);
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(2L);
     }
 
-    @DisplayName("DELETE /person/{id}")
+    @DisplayName("DELETE /produkt/{id}")
     @Test
-    void deletePersonById() {
+    void deleteProduktById() {
         // GIVEN
-        EinkaufszettelEntity personInserted = personRepository.save(testHelper.getMaxEntity());
+        ProduktEntity personInserted = produktRepository.save(testHelper.getJogurtEntity());
         String idInserted = personInserted.getId().toHexString();
         // WHEN
-        ResponseEntity<Long> result = rest.exchange(URL + "/person/" + idInserted, HttpMethod.DELETE, null,
+        ResponseEntity<Long> result = rest.exchange(URL + "/produkt/" + idInserted, HttpMethod.DELETE, null,
                                                     new ParameterizedTypeReference<>() {
                                                     });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(1L);
-        assertThat(personRepository.count()).isEqualTo(0L);
+        assertThat(produktRepository.count()).isEqualTo(0L);
     }
 
-    @DisplayName("DELETE /persons/{ids}")
+    @DisplayName("DELETE /produkte/{ids}")
     @Test
-    void deletePersonsByIds() {
+    void deleteProdukteByIds() {
         // GIVEN
-        List<EinkaufszettelEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
-        List<String> idsInserted = personsInserted.stream().map(EinkaufszettelEntity::getId).map(ObjectId::toString).toList();
+        List<ProduktEntity> personsInserted = produktRepository.saveAll(testHelper.getListJogurtTomateEntity());
+        List<String> idsInserted = personsInserted.stream().map(ProduktEntity::getId).map(ObjectId::toString).toList();
         // WHEN
-        ResponseEntity<Long> result = rest.exchange(URL + "/persons/" + String.join(",", idsInserted),
+        ResponseEntity<Long> result = rest.exchange(URL + "/produkte/" + String.join(",", idsInserted),
                                                     HttpMethod.DELETE, null, new ParameterizedTypeReference<>() {
                 });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(2L);
-        assertThat(personRepository.count()).isEqualTo(0L);
+        assertThat(produktRepository.count()).isEqualTo(0L);
     }
 
-    @DisplayName("DELETE /persons")
+    @DisplayName("DELETE /produkte")
     @Test
-    void deletePersons() {
+    void deleteProdukte() {
         // GIVEN
-        personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        produktRepository.saveAll(testHelper.getListJogurtTomateEntity());
         // WHEN
-        ResponseEntity<Long> result = rest.exchange(URL + "/persons", HttpMethod.DELETE, null,
+        ResponseEntity<Long> result = rest.exchange(URL + "/produkte", HttpMethod.DELETE, null,
                                                     new ParameterizedTypeReference<>() {
                                                     });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(2L);
-        assertThat(personRepository.count()).isEqualTo(0L);
+        assertThat(produktRepository.count()).isEqualTo(0L);
     }
 
-    @DisplayName("PUT /person")
+    @DisplayName("PUT /produkt")
     @Test
-    void putPerson() {
+    void putProdukt() {
         // GIVEN
-        EinkaufszettelEntity personInserted = personRepository.save(testHelper.getMaxEntity());
+        ProduktEntity produktInserted = produktRepository.save(testHelper.getJogurtEntity());
         // WHEN
-        personInserted.setAge(32);
-        personInserted.setInsurance(false);
-        HttpEntity<EinkaufszettelDTO> body = new HttpEntity<>(new EinkaufszettelDTO(personInserted));
-        ResponseEntity<EinkaufszettelDTO> result = rest.exchange(URL + "/person", HttpMethod.PUT, body,
+        produktInserted.setAnzahl(5);
+        produktInserted.setProdukt("Apfel");
+        HttpEntity<ProduktDTO> body = new HttpEntity<>(new ProduktDTO(produktInserted));
+        ResponseEntity<ProduktDTO> result = rest.exchange(URL + "/person", HttpMethod.PUT, body,
                                                          new ParameterizedTypeReference<>() {
                                                          });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(
-                new EinkaufszettelDTO(personRepository.findOne(personInserted.getId().toString())));
-        assertThat(result.getBody().age()).isEqualTo(32);
-        assertThat(result.getBody().insurance()).isFalse();
-        assertThat(personRepository.count()).isEqualTo(1L);
+                new ProduktDTO(produktRepository.findOne(produktInserted.getId().toString())));
+        assertThat(result.getBody().anzahl()).isEqualTo(5);
+        assertThat(result.getBody().produkt()).isEqualTo("Apfel");
+        assertThat(produktRepository.count()).isEqualTo(1L);
     }
 
-    @DisplayName("PUT /persons with 2 persons")
+    @DisplayName("PUT /produkte with 2 produkte")
     @Test
-    void putPersons() {
+    void putProdukte() {
         // GIVEN
-        List<EinkaufszettelEntity> personsInserted = personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        List<ProduktEntity> produkteInserted = produktRepository.saveAll(testHelper.getListJogurtTomateEntity());
         // WHEN
-        personsInserted.get(0).setAge(32);
-        personsInserted.get(0).setInsurance(false);
-        personsInserted.get(1).setAge(28);
-        personsInserted.get(1).setInsurance(true);
-        HttpEntity<List<EinkaufszettelDTO>> body = new HttpEntity<>(personsInserted.stream().map(EinkaufszettelDTO::new).toList());
-        ResponseEntity<Long> result = rest.exchange(URL + "/persons", HttpMethod.PUT, body,
+        produkteInserted.get(0).setAnzahl(5);
+        produkteInserted.get(0).setProdukt("Apfel");
+        produkteInserted.get(1).setAnzahl(3);
+        produkteInserted.get(1).setProdukt("Milch");
+        HttpEntity<List<ProduktDTO>> body = new HttpEntity<>(produkteInserted.stream().map(ProduktDTO::new).toList());
+        ResponseEntity<Long> result = rest.exchange(URL + "/produkte", HttpMethod.PUT, body,
                                                     new ParameterizedTypeReference<>() {
                                                     });
         // THEN
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(2L);
-        EinkaufszettelEntity max = personRepository.findOne(personsInserted.get(0).getId().toString());
-        EinkaufszettelEntity alex = personRepository.findOne(personsInserted.get(1).getId().toString());
-        assertThat(max.getAge()).isEqualTo(32);
-        assertThat(max.getInsurance()).isFalse();
-        assertThat(alex.getAge()).isEqualTo(28);
-        assertThat(alex.getInsurance()).isTrue();
-        assertThat(personRepository.count()).isEqualTo(2L);
+        ProduktEntity max = produktRepository.findOne(produkteInserted.get(0).getId().toString());
+        ProduktEntity alex = produktRepository.findOne(produkteInserted.get(1).getId().toString());
+        assertThat(max.getAnzahl()).isEqualTo(5);
+        assertThat(max.getProdukt()).isEqualTo("Apfel");
+        assertThat(alex.getAnzahl()).isEqualTo(3);
+        assertThat(alex.getProdukt()).isEqualTo("Milch");
+        assertThat(produktRepository.count()).isEqualTo(2L);
     }
 
     @DisplayName("GET /persons/averageAge")
     @Test
     void getAverageAge() {
         // GIVEN
-        personRepository.saveAll(testHelper.getListMaxAlexEntity());
+        produktRepository.saveAll(testHelper.getListJogurtTomateEntity());
         // WHEN
         ResponseEntity<Long> result = rest.getForEntity(URL + "/persons/averageAge", Long.class);
         // THEN
