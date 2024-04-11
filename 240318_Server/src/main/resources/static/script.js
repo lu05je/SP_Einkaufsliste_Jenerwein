@@ -2,6 +2,7 @@ const produktForm = document.querySelector('form');
 const produktInput = document.getElementById('produkt-input');
 const produktListUL = document.getElementById('produkt-list');
 
+
 let allProdukte = getProdukte();
 updateProduktList();
 
@@ -9,6 +10,39 @@ produktForm.addEventListener('submit', function (e){
     e.preventDefault();
     addProdukt();
 })
+
+function createProdukt(id, isChecked, anzahl, produkt) {
+    return {
+        id: id,
+        isChecked: isChecked,
+        anzahl: anzahl,
+        produkt: produkt,
+        getId: function() {
+            return this.id;
+        },
+        getStatus: function() {
+            return this.isChecked;
+        },
+        getAnzahl: function() {
+            return this.anzahl;
+        },
+        getProdukt: function() {
+            return this.produkt;
+        },
+        setId: function(id) {
+            this.id = id;
+        },
+        setStatus: function(isChecked) {
+            this.isChecked = isChecked;
+        },
+        setAnzahl: function(anzahl) {
+            this.anzahl = anzahl;
+        },
+        setProdukt: function(produkt) {
+            this.produkt = produkt;
+        }
+    };
+}
 
 function addProdukt(){
     const produktText = produktInput.value.trim();
@@ -83,6 +117,14 @@ function saveProdukte(){
 }
 
 function getProdukte(){
-    const produkte = localStorage.getItem("produkte") || "[]";
-    return JSON.parse(produkte);
+    /*const produkte = localStorage.getItem("produkte") || "[]";
+    return JSON.parse(produkte);*/
+
+    fetch('http://localhost:8080/api/produkte')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Alle Produkte:', data);
+            return JSON.parse(data);
+        })
+        .catch(error => console.error('Fehler beim Abrufen der Produkte:', error));
 }
