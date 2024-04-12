@@ -2,7 +2,6 @@ const produktForm = document.querySelector('form');
 const produktInput = document.getElementById('produkt-input');
 const produktListUL = document.getElementById('produkt-list');
 
-
 let allProdukte = getProdukte();
 updateProduktList();
 
@@ -49,10 +48,23 @@ function addProdukt(){
 
     //nur wenn der Benutzer etwas eingegeben hat
     if(produktText.length > 0){
-        const produktObject = {
-            text: produktText,
-            completed: false
-        }
+
+        let produktObject = {
+            anzahl: 1,
+            produkt: produktText
+        };
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/produkt', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 201) {
+                //window.location.href = '/app/mainPage?username=' + username;
+            }else {
+                console.log('Fehlgeschlagen')
+            }
+        };
+        xhr.send(JSON.stringify(produkt));
+
         allProdukte.push(produktObject);
         updateProduktList();
         saveProdukte();
@@ -117,14 +129,6 @@ function saveProdukte(){
 }
 
 function getProdukte(){
-    /*const produkte = localStorage.getItem("produkte") || "[]";
-    return JSON.parse(produkte);*/
-
-    fetch('http://localhost:8080/api/produkte')
-        .then(response => response.json())
-        .then(data => {
-            console.log('Alle Produkte:', data);
-            return JSON.parse(data);
-        })
-        .catch(error => console.error('Fehler beim Abrufen der Produkte:', error));
+    const produkte = localStorage.getItem("produkte") || "[]";
+    return JSON.parse(produkte);
 }
