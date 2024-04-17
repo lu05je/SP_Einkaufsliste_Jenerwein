@@ -10,37 +10,10 @@ produktForm.addEventListener('submit', function (e){
     addProdukt();
 })
 
-function createProdukt(id, isChecked, anzahl, produkt) {
-    return {
-        id: id,
-        isChecked: isChecked,
-        anzahl: anzahl,
-        produkt: produkt,
-        getId: function() {
-            return this.id;
-        },
-        getStatus: function() {
-            return this.isChecked;
-        },
-        getAnzahl: function() {
-            return this.anzahl;
-        },
-        getProdukt: function() {
-            return this.produkt;
-        },
-        setId: function(id) {
-            this.id = id;
-        },
-        setStatus: function(isChecked) {
-            this.isChecked = isChecked;
-        },
-        setAnzahl: function(anzahl) {
-            this.anzahl = anzahl;
-        },
-        setProdukt: function(produkt) {
-            this.produkt = produkt;
-        }
-    };
+function ProduktEntity(id, isChecked, produkt) {
+    this.id = id;
+    this.isChecked = isChecked;
+    this.produkt = produkt;
 }
 
 function addProdukt(){
@@ -48,22 +21,21 @@ function addProdukt(){
 
     //nur wenn der Benutzer etwas eingegeben hat
     if(produktText.length > 0){
-
         let produktObject = {
-            anzahl: 1,
             produkt: produktText
         };
+
+        //auf Endpoint für POST zugreifen
         let xhr = new XMLHttpRequest();
         xhr.open('POST', '/api/produkt', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 201) {
-                //window.location.href = '/app/mainPage?username=' + username;
-            }else {
-                console.log('Fehlgeschlagen')
-            }
-        };
-        xhr.send(JSON.stringify(produkt));
+
+        xhr.send(JSON.stringify(produktObject));
+
+        produktObject = {
+            text: produktText,
+            completed: false
+        }
 
         allProdukte.push(produktObject);
         updateProduktList();

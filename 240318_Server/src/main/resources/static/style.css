@@ -94,10 +94,27 @@ form{
     cursor: pointer;
 }
 .delete-button svg{
-    transition: 200ms ease;
-}
+     transition: 200ms ease;
+ }
 .delete-button:hover svg{
     fill: #ff0033;
+}
+.edit-button{
+    padding: 3px;
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.edit-button svg{
+    height: 65%;
+    width: 65%;
+    transition: 200ms ease;
+}
+.edit-button:hover svg{
+    fill: #0000ff;
 }
 .custom-checkbox{
     border: 2px solid var(--accent-color);

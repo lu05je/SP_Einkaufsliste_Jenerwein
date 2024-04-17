@@ -11,13 +11,11 @@ import java.util.List;
 class TestHelper {
 
     ProduktEntity getJogurtEntity() {
-        return new ProduktEntity().setAnzahl(3)
-                                 .setProdukt("Jogurt");
+        return new ProduktEntity().setProdukt("Jogurt");
     }
 
     ProduktEntity getTomateEntity() {
-        return new ProduktEntity().setAnzahl(1)
-                                 .setProdukt("Tomate");
+        return new ProduktEntity().setProdukt("Tomate");
     }
 
     ProduktDTO getJogurtDTO() {

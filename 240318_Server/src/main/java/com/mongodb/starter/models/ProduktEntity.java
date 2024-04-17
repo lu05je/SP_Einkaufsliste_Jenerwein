@@ -8,7 +8,6 @@ public class ProduktEntity {
 
     private ObjectId id;
     private Boolean isChecked;
-    private int anzahl;
     private String produkt;
 
 
@@ -16,11 +15,9 @@ public class ProduktEntity {
     }
 
     public ProduktEntity(ObjectId id,
-                         int anzahl,
                          String produkt) {
         this.id = id;
         this.isChecked = false;
-        this.anzahl = anzahl;
         this.produkt = produkt;
     }
 
@@ -42,15 +39,6 @@ public class ProduktEntity {
         return this;
     }
 
-    public int getAnzahl() {
-        return anzahl;
-    }
-
-    public ProduktEntity setAnzahl(int anzahl) {
-        this.anzahl = anzahl;
-        return this;
-    }
-
     public String getProdukt() {
         return produkt;
     }
@@ -61,7 +49,7 @@ public class ProduktEntity {
     }
     @Override
     public String toString() {
-        return "Person{" + "id=" + id + ", Status='" + isChecked + '\'' + ", Anzahl='" + anzahl + '\'' + ", Produkt='" + produkt + '}';
+        return "Person{" + "id=" + id + ", Status='" + isChecked + '\'' + ", Produkt='" + produkt + '}';
     }
 
     @Override
@@ -69,14 +57,13 @@ public class ProduktEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProduktEntity produktEntity = (ProduktEntity) o;
-        return isChecked == produktEntity.isChecked && Objects.equals(id, produktEntity.id) && Objects.equals(anzahl,
-                                                                                                produktEntity.anzahl) && Objects.equals(
+        return isChecked == produktEntity.isChecked && Objects.equals(id, produktEntity.id) && Objects.equals(
                 produkt, produktEntity.produkt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, isChecked, anzahl, produkt);
+        return Objects.hash(id, isChecked, produkt);
     }
 
 }

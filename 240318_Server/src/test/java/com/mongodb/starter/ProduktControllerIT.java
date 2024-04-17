@@ -198,7 +198,6 @@ public class ProduktControllerIT {
         // GIVEN
         ProduktEntity produktInserted = produktRepository.save(testHelper.getJogurtEntity());
         // WHEN
-        produktInserted.setAnzahl(5);
         produktInserted.setProdukt("Apfel");
         HttpEntity<ProduktDTO> body = new HttpEntity<>(new ProduktDTO(produktInserted));
         ResponseEntity<ProduktDTO> result = rest.exchange(URL + "/person", HttpMethod.PUT, body,
@@ -208,7 +207,6 @@ public class ProduktControllerIT {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(
                 new ProduktDTO(produktRepository.findOne(produktInserted.getId().toString())));
-        assertThat(result.getBody().anzahl()).isEqualTo(5);
         assertThat(result.getBody().produkt()).isEqualTo("Apfel");
         assertThat(produktRepository.count()).isEqualTo(1L);
     }
@@ -219,9 +217,7 @@ public class ProduktControllerIT {
         // GIVEN
         List<ProduktEntity> produkteInserted = produktRepository.saveAll(testHelper.getListJogurtTomateEntity());
         // WHEN
-        produkteInserted.get(0).setAnzahl(5);
         produkteInserted.get(0).setProdukt("Apfel");
-        produkteInserted.get(1).setAnzahl(3);
         produkteInserted.get(1).setProdukt("Milch");
         HttpEntity<List<ProduktDTO>> body = new HttpEntity<>(produkteInserted.stream().map(ProduktDTO::new).toList());
         ResponseEntity<Long> result = rest.exchange(URL + "/produkte", HttpMethod.PUT, body,
@@ -232,9 +228,7 @@ public class ProduktControllerIT {
         assertThat(result.getBody()).isEqualTo(2L);
         ProduktEntity max = produktRepository.findOne(produkteInserted.get(0).getId().toString());
         ProduktEntity alex = produktRepository.findOne(produkteInserted.get(1).getId().toString());
-        assertThat(max.getAnzahl()).isEqualTo(5);
         assertThat(max.getProdukt()).isEqualTo("Apfel");
-        assertThat(alex.getAnzahl()).isEqualTo(3);
         assertThat(alex.getProdukt()).isEqualTo("Milch");
         assertThat(produktRepository.count()).isEqualTo(2L);
     }
