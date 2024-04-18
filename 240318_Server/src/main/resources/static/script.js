@@ -2,7 +2,11 @@ const produktForm = document.querySelector('form');
 const produktInput = document.getElementById('produkt-input');
 const produktListUL = document.getElementById('produkt-list');
 
+getProdukte();
+
 let allProdukte = getProdukte();
+//let allProdukte = [];
+
 updateProduktList();
 
 produktForm.addEventListener('submit', function (e){
@@ -103,4 +107,30 @@ function saveProdukte(){
 function getProdukte(){
     const produkte = localStorage.getItem("produkte") || "[]";
     return JSON.parse(produkte);
+
+    /*let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'api/produkte', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            const produkte = JSON.parse(xhr.responseText);
+            const transformedData = produkte.map(item => ({
+                id: item.id,
+                isChecked: false, // Hier kannst du den Standardwert für isChecked setzen
+                produkt: item.produkt
+            }));
+            return JSON.parse(transformedData);
+            console.log('Transformierte Daten:', transformedData);
+        } else {
+            console.error('Fehler beim Abrufen der Produkte:', xhr.statusText);
+        }
+    };
+
+    xhr.onerror = function() {
+        console.error('Netzwerkfehler beim Abrufen der Produkte.');
+    };
+
+    xhr.send();*/
+
 }

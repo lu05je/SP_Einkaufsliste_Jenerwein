@@ -114,7 +114,7 @@ form{
     transition: 200ms ease;
 }
 .edit-button:hover svg{
-    fill: #0000ff;
+    fill: lightblue;
 }
 .custom-checkbox{
     border: 2px solid var(--accent-color);
