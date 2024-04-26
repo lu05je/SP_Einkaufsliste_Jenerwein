@@ -2,23 +2,24 @@ const produktForm = document.querySelector('form');
 const produktInput = document.getElementById('produkt-input');
 const produktListUL = document.getElementById('produkt-list');
 
-getProdukte();
+//let allProdukte = getProdukte();
+let allProdukte = [];
 
-let allProdukte = getProdukte();
-//let allProdukte = [];
-
-updateProduktList();
+// Beim Laden der Seite Produkte aus der Datenbank laden
+update();
+/*(async () => {
+    try {
+        await getDatenFromMongoDB();    // Daten aus MongoDB abrufen
+        updateProduktList();            //Oberfläche aktualisieren
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Daten:', error);
+    }
+})();*/
 
 produktForm.addEventListener('submit', function (e){
     e.preventDefault();
     addProdukt();
 })
-
-function ProduktEntity(id, isChecked, produkt) {
-    this.id = id;
-    this.isChecked = isChecked;
-    this.produkt = produkt;
-}
 
 function addProdukt(){
     const produktText = produktInput.value.trim();
@@ -36,22 +37,24 @@ function addProdukt(){
 
         xhr.send(JSON.stringify(produktObject));
 
-        produktObject = {
+        /*produktObject = {
+            id: "",
             text: produktText,
             completed: false
-        }
+        }*/
 
-        allProdukte.push(produktObject);
-        updateProduktList();
-        saveProdukte();
+        //allProdukte.push(produktObject);
+        //updateProduktList();
+        update();
+        //saveProdukte();
         produktInput.value = "";
     }
 }
 
 function updateProduktList(){
     produktListUL.innerHTML = "";
-    allProdukte.forEach((produkt, produktIndex)=>{
-        produktItem = createProduktItem(produkt, produktIndex);
+    allProdukte.forEach((id, produkt)=>{
+        produktItem = createProduktItem(produkt, id);
         produktListUL.append(produktItem);
     })
 }
@@ -73,6 +76,11 @@ function createProduktItem(produkt, produktIndex){
                 <label for="${produktId}" class="produkt-text">
                     ${produktText}
                 </label>
+                <button class="edit-button">
+                    <svg fill="var(--secondary-color)" xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
+                        <path d="M180-180h44l472-471-44-44-472 471v44Zm-60 60v-128l575-574q8-8 19-12.5t23-4.5q11 0 22 4.5t20 12.5l44 44q9 9 13 20t4 22q0 11-4.5 22.5T823-694L248-120H120Zm659-617-41-41 41 41Zm-105 64-22-22 44 44-22-22Z"/>
+                    </svg>
+                </button>
                 <button class="delete-button">
                     <svg fill="var(--secondary-color)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
                         <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
@@ -82,6 +90,10 @@ function createProduktItem(produkt, produktIndex){
     const deleteButton = produktLI.querySelector(".delete-button");
     deleteButton.addEventListener("click", ()=>{
         deleteProduktItem(produktIndex);
+    })
+    const editButton = produktLI.querySelector(".edit-button");
+    editButton.addEventListener("click", ()=>{
+        editProduktItem(produktIndex);
     })
     const checkbox = produktLI.querySelector("input");
     checkbox.addEventListener("change", ()=>{
@@ -93,35 +105,40 @@ function createProduktItem(produkt, produktIndex){
     return produktLI;
 }
 
-function deleteProduktItem(produktIndex){
+/*function deleteProduktItem(produktIndex){
     allProdukte = allProdukte.filter((_, i)=> i !== produktIndex);
     saveProdukte();
     updateProduktList();
 }
-
+function editProduktItem(produktIndex){
+    allProdukte = allProdukte.filter((_, i)=> i !== produktIndex);
+    saveProdukte();
+    updateProduktList();
+}*/
 function saveProdukte(){
-    const produkteJson = JSON.stringify(allProdukte);
-    localStorage.setItem("produkte", produkteJson)
+    /*const produkteJson = JSON.stringify(allProdukte);
+    localStorage.setItem("produkte", produkteJson);*/
+    //auf Endpoint für POST zugreifen
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/produkt', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.send(JSON.stringify(produktObject));
 }
 
 function getProdukte(){
-    const produkte = localStorage.getItem("produkte") || "[]";
-    return JSON.parse(produkte);
+    /*const produkte = localStorage.getItem("produkte") || "[]";
+    return JSON.parse(produkte);*/
 
-    /*let xhr = new XMLHttpRequest();
+    let produkte = [];
+
+    let xhr = new XMLHttpRequest();
     xhr.open('GET', 'api/produkte', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onload = function() {
         if (xhr.status >= 200 && xhr.status < 300) {
-            const produkte = JSON.parse(xhr.responseText);
-            const transformedData = produkte.map(item => ({
-                id: item.id,
-                isChecked: false, // Hier kannst du den Standardwert für isChecked setzen
-                produkt: item.produkt
-            }));
-            return JSON.parse(transformedData);
-            console.log('Transformierte Daten:', transformedData);
+            produkte = JSON.parse(xhr.responseText);      //alle Produkte aus er Datenbank zurückgeben
         } else {
             console.error('Fehler beim Abrufen der Produkte:', xhr.statusText);
         }
@@ -131,6 +148,33 @@ function getProdukte(){
         console.error('Netzwerkfehler beim Abrufen der Produkte.');
     };
 
-    xhr.send();*/
+    xhr.send();
+    return produkte;
 
+}
+
+async function getDatenFromMongoDB() {
+    try {
+        const response = await fetch('/api/produkte');
+        if (!response.ok) {
+            throw new Error('Fehler beim Abrufen der Daten');
+        }
+        //const daten = await response.json();
+        //return daten;
+        allProdukte = await response.json();
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Daten:', error);
+        throw error;
+    }
+}
+
+async function update() {
+    try {
+        await getDatenFromMongoDB(); // Daten aus MongoDB abrufen
+        console.log('Daten aus der MongoDB:', allProdukte); // auf das Ergebnis warten und dann weitermachen
+        updateProduktList(); // Funktion zur Aktualisierung der Liste aufrufen
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Daten:', error);
+        // Fehlerbehandlung
+    }
 }
