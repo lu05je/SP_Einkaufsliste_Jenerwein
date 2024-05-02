@@ -31,11 +31,12 @@ function addProdukt(){
         };
 
         //auf Endpoint für POST zugreifen
-        let xhr = new XMLHttpRequest();
+        saveProdukte(produktObject);
+        /*let xhr = new XMLHttpRequest();
         xhr.open('POST', '/api/produkt', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
 
-        xhr.send(JSON.stringify(produktObject));
+        xhr.send(JSON.stringify(produktObject));*/
 
         /*produktObject = {
             id: "",
@@ -53,16 +54,16 @@ function addProdukt(){
 
 function updateProduktList(){
     produktListUL.innerHTML = "";
-    allProdukte.forEach((id, produkt)=>{
-        produktItem = createProduktItem(produkt, id);
+    allProdukte.forEach(function(p) {
+        produktItem = createProduktItem(p.produkt, p.id);
         produktListUL.append(produktItem);
     })
 }
 
-function createProduktItem(produkt, produktIndex){
-    const produktId = "produkt-"+produktIndex;
+function createProduktItem(produkt, id){
+    const produktId = "produkt-"+id;
     const produktLI = document.createElement("li");
-    const produktText = produkt.text;
+    const produktText = produkt;
 
     //className auf "produkt" damit die CSS-Styles wirken
     produktLI.className = "produkt";
@@ -115,7 +116,7 @@ function editProduktItem(produktIndex){
     saveProdukte();
     updateProduktList();
 }*/
-function saveProdukte(){
+function saveProdukte(produktObject){
     /*const produkteJson = JSON.stringify(allProdukte);
     localStorage.setItem("produkte", produkteJson);*/
     //auf Endpoint für POST zugreifen
@@ -170,9 +171,8 @@ async function getDatenFromMongoDB() {
 
 async function update() {
     try {
-        await getDatenFromMongoDB(); // Daten aus MongoDB abrufen
-        console.log('Daten aus der MongoDB:', allProdukte); // auf das Ergebnis warten und dann weitermachen
-        updateProduktList(); // Funktion zur Aktualisierung der Liste aufrufen
+        await getDatenFromMongoDB().then(r => updateProduktList()); // Daten aus MongoDB abrufen & Oberfläche aktualisieren
+        //console.log('Daten aus der MongoDB:', allProdukte); // auf das Ergebnis warten und dann weitermachen
     } catch (error) {
         console.error('Fehler beim Abrufen der Daten:', error);
         // Fehlerbehandlung
