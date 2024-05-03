@@ -21,34 +21,26 @@ produktForm.addEventListener('submit', function (e){
     addProdukt();
 })
 
-function addProdukt(){
+function addProdukt() {
     const produktText = produktInput.value.trim();
 
-    //nur wenn der Benutzer etwas eingegeben hat
-    if(produktText.length > 0){
+    // Nur wenn der Benutzer etwas eingegeben hat
+    if (produktText.length > 0) {
         let produktObject = {
             produkt: produktText
         };
 
-        //auf Endpoint für POST zugreifen
-        saveProdukte(produktObject);
-        /*let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/produkt', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-
-        xhr.send(JSON.stringify(produktObject));*/
-
-        /*produktObject = {
-            id: "",
-            text: produktText,
-            completed: false
-        }*/
-
-        //allProdukte.push(produktObject);
-        //updateProduktList();
-        update();
-        //saveProdukte();
-        produktInput.value = "";
+        // Auf Endpoint für POST zugreifen und Callback verwenden
+        saveProdukte(produktObject, function(error) {
+            if (error) {
+                console.error('Fehler beim Speichern des Produkts:', error);
+                // Fehlerbehandlung
+            } else {
+                // Nachdem das Produkt gespeichert wurde, die Oberfläche aktualisieren
+                update();
+                produktInput.value = "";
+            }
+        });
     }
 }
 
@@ -116,13 +108,24 @@ function editProduktItem(produktIndex){
     saveProdukte();
     updateProduktList();
 }*/
-function saveProdukte(produktObject){
-    /*const produkteJson = JSON.stringify(allProdukte);
-    localStorage.setItem("produkte", produkteJson);*/
-    //auf Endpoint für POST zugreifen
+function saveProdukte(produktObject, callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/produkt', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            // Erfolgreiche Anfrage
+            callback(null); // null als Fehler an das Callback übergeben
+        } else {
+            // Anfrage fehlgeschlagen
+            callback(xhr.statusText);
+        }
+    };
+    xhr.onerror = function () {
+        // Fehler bei der Anfrage
+        callback(xhr.statusText);
+    };
 
     xhr.send(JSON.stringify(produktObject));
 }
