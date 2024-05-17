@@ -82,7 +82,14 @@ function createProduktItem(produkt, id){
     `
     const deleteButton = produktLI.querySelector(".delete-button");
     deleteButton.addEventListener("click", ()=>{
-        deleteProduktItem(produktIndex);
+        deleteProduktItem(id)
+            .then(() => {
+                console.log('Produkt wurde erfolgreich gelöscht');
+                update();
+            })
+            .catch(error => {
+                console.error('Es gab einen Fehler beim Löschen des Produkts:', error);
+            });
     })
     const editButton = produktLI.querySelector(".edit-button");
     editButton.addEventListener("click", ()=>{
@@ -97,13 +104,22 @@ function createProduktItem(produkt, id){
 
     return produktLI;
 }
-
-/*function deleteProduktItem(produktIndex){
-    allProdukte = allProdukte.filter((_, i)=> i !== produktIndex);
-    saveProdukte();
-    updateProduktList();
+async function deleteProduktItem(id) {
+    try {
+        const response = await fetch(`/api/produkt/${id}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) {
+            throw new Error('Fehler beim Löschen des Produkts');
+        }
+        console.log('Produkt erfolgreich gelöscht');
+    } catch (error) {
+        console.error('Fehler beim Löschen des Produkts:', error);
+        throw error;
+    }
 }
-function editProduktItem(produktIndex){
+
+/*function editProduktItem(produktIndex){
     allProdukte = allProdukte.filter((_, i)=> i !== produktIndex);
     saveProdukte();
     updateProduktList();
@@ -130,10 +146,10 @@ function saveProdukte(produktObject, callback) {
     xhr.send(JSON.stringify(produktObject));
 }
 
-function getProdukte(){
+/*function getProdukte(){
     /*const produkte = localStorage.getItem("produkte") || "[]";
     return JSON.parse(produkte);*/
-
+/*
     let produkte = [];
 
     let xhr = new XMLHttpRequest();
@@ -142,7 +158,7 @@ function getProdukte(){
 
     xhr.onload = function() {
         if (xhr.status >= 200 && xhr.status < 300) {
-            produkte = JSON.parse(xhr.responseText);      //alle Produkte aus er Datenbank zurückgeben
+            produkte = JSON.parse(xhr.responseText);      //alle Produkte aus der Datenbank zurückgeben
         } else {
             console.error('Fehler beim Abrufen der Produkte:', xhr.statusText);
         }
@@ -155,7 +171,7 @@ function getProdukte(){
     xhr.send();
     return produkte;
 
-}
+}*/
 
 async function getDatenFromMongoDB() {
     try {
