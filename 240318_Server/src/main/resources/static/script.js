@@ -93,11 +93,21 @@ function createProduktItem(produkt, id){
     })
     const editButton = produktLI.querySelector(".edit-button");
     editButton.addEventListener("click", ()=>{
-        editProduktItem(produktIndex);
+        //Produkttext Ändern
+        produkt.produkt = "bbb";
+
+        editProduktItem(produkt)
+            .then(updatedProdukt => {
+                console.log('Produkt wurde erfolgreich aktualisiert:', updatedProdukt);
+                update();
+            })
+            .catch(error => {
+                console.error('Es gab einen Fehler bei der Aktualisierung des Produkts:', error);
+            });
     })
     const checkbox = produktLI.querySelector("input");
     checkbox.addEventListener("change", ()=>{
-        allProdukte[produktIndex].completed = checkbox.checked;
+        //allProdukte[id].completed = checkbox.checked;
         saveProdukte();
     })
     checkbox.checked = produkt.completed;
@@ -119,11 +129,29 @@ async function deleteProduktItem(id) {
     }
 }
 
-/*function editProduktItem(produktIndex){
-    allProdukte = allProdukte.filter((_, i)=> i !== produktIndex);
+async function editProduktItem(produkt){
+    try {
+        const response = await fetch('/api/produkt', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(produkt)
+        });
+        if (!response.ok) {
+            throw new Error('Fehler beim Aktualisieren des Produkts');
+        }
+        const updatedProdukt = await response.json();
+        console.log('Produkt erfolgreich aktualisiert:', updatedProdukt);
+        return updatedProdukt;
+    } catch (error) {
+        console.error('Fehler beim Aktualisieren des Produkts:', error);
+        throw error;
+    }
+    /*allProdukte = allProdukte.filter((_, i)=> i !== produktIndex);
     saveProdukte();
-    updateProduktList();
-}*/
+    updateProduktList();*/
+}
 function saveProdukte(produktObject, callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/produkt', true);
