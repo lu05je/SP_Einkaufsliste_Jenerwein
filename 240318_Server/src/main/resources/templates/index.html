@@ -64,9 +64,21 @@
                 </button>
             </li>-->
         </ul>
-
     </div>
 
+    <!-- Dialog-Element -->
+    <dialog id="editDialog">
+        <form method="dialog">
+            <p>
+                <label for="dialogText">Produkttext ändern:</label>
+                <input type="text" id="dialogText" value="">
+            </p>
+            <menu>
+                <button id="cancelBtn" type="reset">Abbrechen</button>
+                <button id="confirmBtn" type="submit">OK</button>
+            </menu>
+        </form>
+    </dialog>
 
     <script src="/script.js" defer></script>
 

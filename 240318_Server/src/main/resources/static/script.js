@@ -2,6 +2,11 @@ const produktForm = document.querySelector('form');
 const produktInput = document.getElementById('produkt-input');
 const produktListUL = document.getElementById('produkt-list');
 
+const editDialog = document.getElementById('editDialog');
+const dialogText = document.getElementById('dialogText');
+const cancelBtn = document.getElementById('cancelBtn');
+const confirmBtn = document.getElementById('confirmBtn');
+
 //let allProdukte = getProdukte();
 let allProdukte = [];
 
@@ -47,12 +52,12 @@ function addProdukt() {
 function updateProduktList(){
     produktListUL.innerHTML = "";
     allProdukte.forEach(function(p) {
-        produktItem = createProduktItem(p.produkt, p.id);
+        produktItem = createProduktItem(p.produkt, p.id, p.isChecked);
         produktListUL.append(produktItem);
     })
 }
 
-function createProduktItem(produkt, id){
+function createProduktItem(produkt, id, isChecked){
     const produktId = "produkt-"+id;
     const produktLI = document.createElement("li");
     const produktText = produkt;
@@ -94,23 +99,63 @@ function createProduktItem(produkt, id){
     const editButton = produktLI.querySelector(".edit-button");
     editButton.addEventListener("click", ()=>{
         //Produkttext Ändern
-        produkt.produkt = "bbb";
+        let json = `{
+            "id": "${id}",
+            "isChecked": "${isChecked}",
+            "produkt": "Neue eingegebener Text"
+        }`;
 
-        editProduktItem(produkt)
+        // Den Dialog öffnen und den aktuellen Text des Produkts im Eingabefeld anzeigen
+        dialogText.value = produktText;
+        editDialog.showModal();
+
+        // Event Listener für den Bestätigungsbutton im Dialog
+        confirmBtn.addEventListener('click', () => {
+            // Den neuen Text aus dem Dialogfeld abrufen
+            const newProduktText = dialogText.value.trim();
+
+            // Überprüfen, ob der neue Text nicht leer ist
+            if (newProduktText !== '') {
+                // JSON mit den aktualisierten Produktinformationen erstellen
+                const updatedJson = `{
+                "id": "${id}",
+                "isChecked": "${isChecked}",
+                "produkt": "${newProduktText}"
+            }`;
+
+                // Funktion zum Aktualisieren des Produkts aufrufen und das Dialogfeld schließen
+                editProduktItem(updatedJson)
+                    .then(updatedProdukt => {
+                        console.log('Produkt wurde erfolgreich aktualisiert:', updatedProdukt);
+                        // Die Oberfläche aktualisieren
+                        update();
+                        // Das Dialogfeld schließen
+                        editDialog.close();
+                    })
+                    .catch(error => {
+                        console.error('Es gab einen Fehler bei der Aktualisierung des Produkts:', error);
+                    });
+            } else {
+                // Wenn der neue Text leer ist, dem Benutzer eine Fehlermeldung anzeigen
+                console.error('Der neue Produkttext darf nicht leer sein.');
+            }
+        });
+
+        /*editProduktItem(json)
             .then(updatedProdukt => {
                 console.log('Produkt wurde erfolgreich aktualisiert:', updatedProdukt);
                 update();
             })
             .catch(error => {
                 console.error('Es gab einen Fehler bei der Aktualisierung des Produkts:', error);
-            });
+            });*/
     })
     const checkbox = produktLI.querySelector("input");
     checkbox.addEventListener("change", ()=>{
         //allProdukte[id].completed = checkbox.checked;
         saveProdukte();
     })
-    checkbox.checked = produkt.completed;
+    //checkbox.checked = produkt.completed;
 
     return produktLI;
 }
@@ -136,7 +181,7 @@ async function editProduktItem(produkt){
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(produkt)
+            body: produkt
         });
         if (!response.ok) {
             throw new Error('Fehler beim Aktualisieren des Produkts');
