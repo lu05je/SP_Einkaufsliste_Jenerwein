@@ -12,14 +12,6 @@ let allProdukte = [];
 
 // Beim Laden der Seite Produkte aus der Datenbank laden
 update();
-/*(async () => {
-    try {
-        await getDatenFromMongoDB();    // Daten aus MongoDB abrufen
-        updateProduktList();            //Oberfläche aktualisieren
-    } catch (error) {
-        console.error('Fehler beim Abrufen der Daten:', error);
-    }
-})();*/
 
 produktForm.addEventListener('submit', function (e){
     e.preventDefault();
@@ -65,7 +57,7 @@ function createProduktItem(produkt, id, isChecked){
     //className auf "produkt" damit die CSS-Styles wirken
     produktLI.className = "produkt";
     produktLI.innerHTML = ` 
-                <input type="checkbox" id="${produktId}">
+                <input type="checkbox" id="${produktId}" ${isChecked ? "checked" : ""}>
                 <label class="custom-checkbox" for="${produktId}">
                     <svg fill="transparent" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
                         <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
@@ -96,18 +88,18 @@ function createProduktItem(produkt, id, isChecked){
                 console.error('Es gab einen Fehler beim Löschen des Produkts:', error);
             });
     })
+
     const editButton = produktLI.querySelector(".edit-button");
     editButton.addEventListener("click", ()=>{
-        //Produkttext Ändern
-        let json = `{
-            "id": "${id}",
-            "isChecked": "${isChecked}",
-            "produkt": "Neue eingegebener Text"
-        }`;
 
         // Den Dialog öffnen und den aktuellen Text des Produkts im Eingabefeld anzeigen
         dialogText.value = produktText;
         editDialog.showModal();
+
+        //Bei Abbrechen -> Dialog schließen
+        cancelBtn.addEventListener('click', () => {
+            editDialog.close();
+        })
 
         // Event Listener für den Bestätigungsbutton im Dialog
         confirmBtn.addEventListener('click', () => {
@@ -119,46 +111,31 @@ function createProduktItem(produkt, id, isChecked){
                 // JSON mit den aktualisierten Produktinformationen erstellen
                 const updatedJson = `{
                 "id": "${id}",
-                "isChecked": "${isChecked}",
-                "produkt": "${newProduktText}"
+                "produkt": "${newProduktText}",
+                "status": "${isChecked}"
             }`;
+                editProduktItem(updatedJson);
 
-                // Funktion zum Aktualisieren des Produkts aufrufen und das Dialogfeld schließen
-                editProduktItem(updatedJson)
-                    .then(updatedProdukt => {
-                        console.log('Produkt wurde erfolgreich aktualisiert:', updatedProdukt);
-                        // Die Oberfläche aktualisieren
-                        update();
-                        // Das Dialogfeld schließen
-                        editDialog.close();
-                    })
-                    .catch(error => {
-                        console.error('Es gab einen Fehler bei der Aktualisierung des Produkts:', error);
-                    });
             } else {
                 // Wenn der neue Text leer ist, dem Benutzer eine Fehlermeldung anzeigen
                 console.error('Der neue Produkttext darf nicht leer sein.');
             }
         });
+    })
 
-        /*editProduktItem(json)
-            .then(updatedProdukt => {
-                console.log('Produkt wurde erfolgreich aktualisiert:', updatedProdukt);
-                update();
-            })
-            .catch(error => {
-                console.error('Es gab einen Fehler bei der Aktualisierung des Produkts:', error);
-            });*/
-    })
-    const checkbox = produktLI.querySelector("input");
-    checkbox.addEventListener("change", ()=>{
-        //allProdukte[id].completed = checkbox.checked;
-        saveProdukte();
-    })
-    //checkbox.checked = produkt.completed;
+    const checkbox = produktLI.querySelector("input[type='checkbox']");
+    checkbox.addEventListener("change", () => {
+        const updatedJson = {
+            id: id,
+            produkt: produkt,
+            isChecked: checkbox.checked
+        };
+        editProduktItem(updatedJson);
+    });
 
     return produktLI;
 }
+
 async function deleteProduktItem(id) {
     try {
         const response = await fetch(`/api/produkt/${id}`, {
@@ -186,17 +163,15 @@ async function editProduktItem(produkt){
         if (!response.ok) {
             throw new Error('Fehler beim Aktualisieren des Produkts');
         }
-        const updatedProdukt = await response.json();
-        console.log('Produkt erfolgreich aktualisiert:', updatedProdukt);
-        return updatedProdukt;
+        else {
+            update();
+        }
     } catch (error) {
         console.error('Fehler beim Aktualisieren des Produkts:', error);
         throw error;
     }
-    /*allProdukte = allProdukte.filter((_, i)=> i !== produktIndex);
-    saveProdukte();
-    updateProduktList();*/
 }
+
 function saveProdukte(produktObject, callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/produkt', true);
@@ -218,33 +193,6 @@ function saveProdukte(produktObject, callback) {
 
     xhr.send(JSON.stringify(produktObject));
 }
-
-/*function getProdukte(){
-    /*const produkte = localStorage.getItem("produkte") || "[]";
-    return JSON.parse(produkte);*/
-/*
-    let produkte = [];
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', 'api/produkte', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            produkte = JSON.parse(xhr.responseText);      //alle Produkte aus der Datenbank zurückgeben
-        } else {
-            console.error('Fehler beim Abrufen der Produkte:', xhr.statusText);
-        }
-    };
-
-    xhr.onerror = function() {
-        console.error('Netzwerkfehler beim Abrufen der Produkte.');
-    };
-
-    xhr.send();
-    return produkte;
-
-}*/
 
 async function getDatenFromMongoDB() {
     try {
