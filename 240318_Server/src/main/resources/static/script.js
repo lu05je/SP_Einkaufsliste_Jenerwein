@@ -7,14 +7,14 @@ const dialogText = document.getElementById('dialogText');
 const cancelBtn = document.getElementById('cancelBtn');
 const confirmBtn = document.getElementById('confirmBtn');
 
-//let allProdukte = getProdukte();
+//Liste aller Produkte
 let allProdukte = [];
 
 // Beim Laden der Seite Produkte aus der Datenbank laden
 update();
 
 produktForm.addEventListener('submit', function (e){
-    e.preventDefault();
+    e.preventDefault();     //Standartverhalten verhindern
     addProdukt();
 })
 
@@ -23,9 +23,10 @@ function addProdukt() {
 
     // Nur wenn der Benutzer etwas eingegeben hat
     if (produktText.length > 0) {
-        let produktObject = {
-            produkt: produktText
-        };
+        let produktObject = `{
+                "produkt": "${produktText}",
+                "status": false
+            }`;
 
         // Auf Endpoint für POST zugreifen und Callback verwenden
         saveProdukte(produktObject, function(error) {
@@ -42,9 +43,11 @@ function addProdukt() {
 }
 
 function updateProduktList(){
-    produktListUL.innerHTML = "";
+    produktListUL.innerHTML = "";           //Produktliste leeren
+
+    //Listenelemente neu erstellen
     allProdukte.forEach(function(p) {
-        produktItem = createProduktItem(p.produkt, p.id, p.isChecked);
+        produktItem = createProduktItem(p.produkt, p.id, p.status);
         produktListUL.append(produktItem);
     })
 }
@@ -54,8 +57,11 @@ function createProduktItem(produkt, id, isChecked){
     const produktLI = document.createElement("li");
     const produktText = produkt;
 
+
     //className auf "produkt" damit die CSS-Styles wirken
     produktLI.className = "produkt";
+
+    //Listenelement erstellen
     produktLI.innerHTML = ` 
                 <input type="checkbox" id="${produktId}" ${isChecked ? "checked" : ""}>
                 <label class="custom-checkbox" for="${produktId}">
@@ -77,6 +83,8 @@ function createProduktItem(produkt, id, isChecked){
                     </svg>
                 </button>
     `
+
+    //Event-Listener für den Delete-Button
     const deleteButton = produktLI.querySelector(".delete-button");
     deleteButton.addEventListener("click", ()=>{
         deleteProduktItem(id)
@@ -89,6 +97,7 @@ function createProduktItem(produkt, id, isChecked){
             });
     })
 
+    //Event-Listener für den Edit-Button
     const editButton = produktLI.querySelector(".edit-button");
     editButton.addEventListener("click", ()=>{
 
@@ -101,7 +110,7 @@ function createProduktItem(produkt, id, isChecked){
             editDialog.close();
         })
 
-        // Event Listener für den Bestätigungsbutton im Dialog
+        //Event-Listener für den Bestätigungsbutton im Dialog
         confirmBtn.addEventListener('click', () => {
             // Den neuen Text aus dem Dialogfeld abrufen
             const newProduktText = dialogText.value.trim();
@@ -110,26 +119,28 @@ function createProduktItem(produkt, id, isChecked){
             if (newProduktText !== '') {
                 // JSON mit den aktualisierten Produktinformationen erstellen
                 const updatedJson = `{
-                "id": "${id}",
-                "produkt": "${newProduktText}",
-                "status": "${isChecked}"
-            }`;
-                editProduktItem(updatedJson);
+                    "id": "${id}",
+                    "produkt": "${newProduktText}",
+                    "status": "${isChecked}"
+                }`;
 
-            } else {
+                editProduktItem(updatedJson);
+            }
+            else {
                 // Wenn der neue Text leer ist, dem Benutzer eine Fehlermeldung anzeigen
                 console.error('Der neue Produkttext darf nicht leer sein.');
             }
         });
     })
 
+    //Event-Listener für die Checkbox
     const checkbox = produktLI.querySelector("input[type='checkbox']");
     checkbox.addEventListener("change", () => {
-        const updatedJson = {
-            id: id,
-            produkt: produkt,
-            isChecked: checkbox.checked
-        };
+        const updatedJson = `{
+            "id": "${id}",
+            "produkt": "${produkt}",
+            "status": "${checkbox.checked}"
+        }`;
         editProduktItem(updatedJson);
     });
 
@@ -145,7 +156,8 @@ async function deleteProduktItem(id) {
             throw new Error('Fehler beim Löschen des Produkts');
         }
         console.log('Produkt erfolgreich gelöscht');
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Fehler beim Löschen des Produkts:', error);
         throw error;
     }
@@ -164,9 +176,10 @@ async function editProduktItem(produkt){
             throw new Error('Fehler beim Aktualisieren des Produkts');
         }
         else {
-            update();
+            update();       //Bei erfolgreicher Änderung -> Oberfläche aktualisieren
         }
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Fehler beim Aktualisieren des Produkts:', error);
         throw error;
     }
@@ -174,14 +187,15 @@ async function editProduktItem(produkt){
 
 function saveProdukte(produktObject, callback) {
     let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/produkt', true);
+    xhr.open('POST', '/api/produkt', true);     //true -> asynchron
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300) {
             // Erfolgreiche Anfrage
-            callback(null); // null als Fehler an das Callback übergeben
-        } else {
+            callback(null); // null -> kein Fehler aufgetreten
+        }
+        else {
             // Anfrage fehlgeschlagen
             callback(xhr.statusText);
         }
@@ -191,19 +205,19 @@ function saveProdukte(produktObject, callback) {
         callback(xhr.statusText);
     };
 
-    xhr.send(JSON.stringify(produktObject));
+    xhr.send(produktObject);    //Anfrage an Server senden
 }
 
 async function getDatenFromMongoDB() {
     try {
+        //alle Produkte aus der Datenbank lesen und in allProdukte speichern
         const response = await fetch('/api/produkte');
         if (!response.ok) {
             throw new Error('Fehler beim Abrufen der Daten');
         }
-        //const daten = await response.json();
-        //return daten;
         allProdukte = await response.json();
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Fehler beim Abrufen der Daten:', error);
         throw error;
     }
@@ -212,9 +226,8 @@ async function getDatenFromMongoDB() {
 async function update() {
     try {
         await getDatenFromMongoDB().then(r => updateProduktList()); // Daten aus MongoDB abrufen & Oberfläche aktualisieren
-        //console.log('Daten aus der MongoDB:', allProdukte); // auf das Ergebnis warten und dann weitermachen
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Fehler beim Abrufen der Daten:', error);
-        // Fehlerbehandlung
     }
 }
