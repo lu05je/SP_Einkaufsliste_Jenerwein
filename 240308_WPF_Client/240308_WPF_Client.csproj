@@ -9,4 +9,12 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="shopping_cart.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="shopping_cart.png" />
+  </ItemGroup>
+
 </Project>

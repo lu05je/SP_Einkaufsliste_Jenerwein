@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_240308_WPF_Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Einkaufsliste" Height="450" Width="800" Icon="/shopping_cart.png">
     <Grid>
+        <ListBox x:Name="produktListBox" HorizontalAlignment="Left" Height="300" VerticalAlignment="Top" Width="500"/>
+        <Button x:Name="addButton" Content="ADD" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="120" Height="30" Click="AddButton_Click"/>
+        
+        <TextBox x:Name="produktTextBox" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Height="30" Margin="0,0,20,0"/>
 
     </Grid>
 </Window>
