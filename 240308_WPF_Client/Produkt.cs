@@ -12,5 +12,6 @@ namespace _240308_WPF_Client
         public bool status { get; set; }
         public string produkt {  get; set; }
 
+
     }
 }

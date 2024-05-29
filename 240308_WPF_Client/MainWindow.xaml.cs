@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _240308_WPF_Client
 {
@@ -19,13 +20,36 @@ namespace _240308_WPF_Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<Produkt> produkte;
+        List<Produkt> produkts = new List<Produkt>();
 
         public MainWindow()
         {
             InitializeComponent();
-            produkte = new ObservableCollection<Produkt>();
+            //produkte = new ObservableCollection<Produkt>();
             //produktListBox.ItemsSource = produkte;
+            LoadProdukte();
+        }
+
+        private async void LoadProdukte()
+        {
+            try
+            {
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = await client.GetAsync("http://10.10.2.79:8080/api/produkte");
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync();
+                    var produktList = JsonSerializer.Deserialize<ObservableCollection<Produkt>>(json);
+                    foreach (var produkt in produktList)
+                    {
+                        produkts.Add(produkt);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Laden der Produkte: {ex.Message}");
+            }
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
@@ -39,7 +63,8 @@ namespace _240308_WPF_Client
                 SaveProdukt(newProdukt, (error) => {
                     if (error == null)
                     {
-                        Dispatcher.Invoke(() => produkte.Add(newProdukt));
+                        Dispatcher.Invoke(() => produkts.Add(newProdukt));
+                        produktTextBox.Text = "";
                     }
                     else
                     {
@@ -49,7 +74,6 @@ namespace _240308_WPF_Client
             }
         }
 
-       
         private async void SaveProdukt(Produkt produkt, Action<string> callback)
         {
             try
@@ -58,7 +82,7 @@ namespace _240308_WPF_Client
                 HttpClient client = new HttpClient();
                 string json = JsonSerializer.Serialize(produkt);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync("http://192.168.0.42:8080/api/produkt", content);
+                HttpResponseMessage response = await client.PostAsync("http://10.10.2.79:8080/api/produkt", content);
 
                 if (response.IsSuccessStatusCode)
                 {
