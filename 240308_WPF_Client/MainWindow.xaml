@@ -11,6 +11,9 @@
 
         <TextBox x:Name="produktTextBox" Width="350" Height="30" Margin="225,25,225,347" FontSize="16"/>
         <Button x:Name="addButton" Content="ADD" Width="70" Height="30" Click="AddButton_Click" Margin="505,25,225,347" FontSize="16"/>
+        <DataGrid x:Name="produktList" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="50,120,50,80" FontSize="16" Background="#FFC1BFBF" BorderBrush="Black"/>
+
+
 
     </Grid>
 </Window>
