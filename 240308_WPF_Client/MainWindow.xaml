@@ -11,8 +11,19 @@
 
         <TextBox x:Name="produktTextBox" Width="350" Height="30" Margin="225,25,225,347" FontSize="16"/>
         <Button x:Name="addButton" Content="ADD" Width="70" Height="30" Click="AddButton_Click" Margin="505,25,225,347" FontSize="16"/>
-        <DataGrid x:Name="produktList" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="50,120,50,80" FontSize="16" Background="#FFC1BFBF" BorderBrush="Black"/>
 
+        <ItemsControl Name="ItemsList" Margin="30, 110, 30, 10">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" Background="LightGray">
+                        <CheckBox IsChecked="{Binding status}" Margin="5, 10, 5, 5" FontSize="16"/>
+                        <TextBlock Text="{Binding produkt}" Width="200" Margin="5" FontSize="16"/>
+                        <Button Content="Edit" Click="EditButton_Click" Tag="{Binding}" Width="75" Margin="5" FontSize="14"/>
+                        <Button Content="Delete" Click="DeleteButton_Click" Tag="{Binding}" Width="75" Margin="5" FontSize="14"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
 
     </Grid>

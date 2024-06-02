@@ -20,24 +20,30 @@ namespace _240308_WPF_Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<Produkt> produkts = new List<Produkt>();
+        //List<Produkt> produkts = new List<Produkt>();
+        ObservableCollection<Produkt> produkts = new ObservableCollection<Produkt>();
 
         public MainWindow()
         {
             InitializeComponent();
-            //produkte = new ObservableCollection<Produkt>();
-            //produktListBox.ItemsSource = produkte;
+
+            //Produkte aus der Datenbank laden
             LoadProdukte();
+
+            //Quelle für die Itemlist festlegen
+            ItemsList.ItemsSource = produkts;
         }
 
         private async void LoadProdukte()
         {
             try
             {
+                //alle Produkte aus der Datenbank lesen
                 HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync("http://10.10.2.79:8080/api/produkte");
+                HttpResponseMessage response = await client.GetAsync("http://192.168.0.42:8080/api/produkte");
                 if (response.IsSuccessStatusCode)
                 {
+                    //in Observable Collection speichern
                     string json = await response.Content.ReadAsStringAsync();
                     var produktList = JsonSerializer.Deserialize<ObservableCollection<Produkt>>(json);
                     foreach (var produkt in produktList)
@@ -82,7 +88,7 @@ namespace _240308_WPF_Client
                 HttpClient client = new HttpClient();
                 string json = JsonSerializer.Serialize(produkt);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync("http://10.10.2.79:8080/api/produkt", content);
+                HttpResponseMessage response = await client.PostAsync("http://192.168.0.42:8080/api/produkt", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -97,6 +103,16 @@ namespace _240308_WPF_Client
             {
                 callback(ex.Message);
             }
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
