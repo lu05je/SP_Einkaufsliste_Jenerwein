@@ -16,8 +16,8 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" Background="LightGray">
-                        <CheckBox IsChecked="{Binding status}" Margin="5, 10, 5, 5" FontSize="16"/>
-                        <TextBlock Text="{Binding produkt}" Width="200" Margin="5" FontSize="16"/>
+                        <CheckBox IsChecked="{Binding IsChecked}" Click="CheckBox_Click" Margin="5, 10, 5, 5" FontSize="16"/>
+                        <TextBlock Text="{Binding ProductName}" Width="200" Margin="5" FontSize="16"/>
                         <Button Content="Edit" Click="EditButton_Click" Tag="{Binding}" Width="75" Margin="5" FontSize="14"/>
                         <Button Content="Delete" Click="DeleteButton_Click" Tag="{Binding}" Width="75" Margin="5" FontSize="14"/>
                     </StackPanel>

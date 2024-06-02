@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace _240308_WPF_Client
 {
+    //INotifyPropertyChanged Interface implementieren, für Änderungen auf der Oberfläche 
     class Produkt : INotifyPropertyChanged
     {
         public string id { get; set; }
@@ -20,6 +22,7 @@ namespace _240308_WPF_Client
             {
                 if (status != value)
                 {
+                    //Bei Änderung wird die Oberfläche aktualisiert
                     status = value;
                     OnPropertyChanged(nameof(IsChecked));
                 }
@@ -33,6 +36,7 @@ namespace _240308_WPF_Client
             {
                 if (produkt != value)
                 {
+                    //Bei Änderung wird die Oberfläche aktualisiert
                     produkt = value;
                     OnPropertyChanged(nameof(ProductName));
                 }

@@ -19,14 +19,19 @@ namespace _240308_WPF_Client
     /// </summary>
     public partial class EditDialog : Window
     {
-        public EditDialog()
+        public string EditedText { get; set; }
+        public EditDialog(string produktText)
         {
             InitializeComponent();
+            editProduktTextBox.Text = produktText;  //Text des momentanen Produkt setzen
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-
+            //Nach Klick Text übernehmen und Dialog schliessen
+            this.EditedText = editProduktTextBox.Text;
+            this.DialogResult = true;
+            this.Close();
         }
     }
 }

@@ -19,3 +19,5 @@ C:\Projekte\POS_Semesterprojekt\SP_Einkaufsliste_Jenerwein\240308_WPF_Client\obj
 C:\Projekte\POS_Semesterprojekt\SP_Einkaufsliste_Jenerwein\240308_WPF_Client\obj\Debug\net8.0-windows\240308_WPF_Client.pdb
 C:\Projekte\POS_Semesterprojekt\SP_Einkaufsliste_Jenerwein\240308_WPF_Client\obj\Debug\net8.0-windows\240308_WPF_Client.genruntimeconfig.cache
 C:\Projekte\POS_Semesterprojekt\SP_Einkaufsliste_Jenerwein\240308_WPF_Client\obj\Debug\net8.0-windows\ref\240308_WPF_Client.dll
+C:\Projekte\POS_Semesterprojekt\SP_Einkaufsliste_Jenerwein\240308_WPF_Client\obj\Debug\net8.0-windows\EditDialog.g.cs
+C:\Projekte\POS_Semesterprojekt\SP_Einkaufsliste_Jenerwein\240308_WPF_Client\obj\Debug\net8.0-windows\EditDialog.baml

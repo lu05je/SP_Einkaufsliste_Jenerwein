@@ -21,7 +21,7 @@ namespace _240308_WPF_Client
     public partial class MainWindow : Window
     {
         //List<Produkt> produkts = new List<Produkt>();
-        ObservableCollection<Produkt> produkts = new ObservableCollection<Produkt>();
+        private ObservableCollection<Produkt> produkts = new ObservableCollection<Produkt>();
 
         public MainWindow()
         {
@@ -40,7 +40,7 @@ namespace _240308_WPF_Client
             {
                 //alle Produkte aus der Datenbank lesen
                 HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync("http://192.168.0.42:8080/api/produkte");
+                HttpResponseMessage response = await client.GetAsync("http://192.168.0.27:8080/api/produkte");
                 if (response.IsSuccessStatusCode)
                 {
                     //in Observable Collection speichern
@@ -69,7 +69,7 @@ namespace _240308_WPF_Client
                 SaveProdukt(newProdukt, (error) => {
                     if (error == null)
                     {
-                        Dispatcher.Invoke(() => produkts.Add(newProdukt));
+                        //Text zurücksetzen
                         produktTextBox.Text = "";
                     }
                     else
@@ -88,10 +88,14 @@ namespace _240308_WPF_Client
                 HttpClient client = new HttpClient();
                 string json = JsonSerializer.Serialize(produkt);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync("http://192.168.0.42:8080/api/produkt", content);
+                HttpResponseMessage response = await client.PostAsync("http://192.168.0.27:8080/api/produkt", content);
 
                 if (response.IsSuccessStatusCode)
                 {
+                    //Produkte neu aus der Datenbank lesen, um neue ID zu bekommen
+                    produkts.Clear();
+                    LoadProdukte();
+
                     callback(null);     //wenn erfolgreich -> null zurückgeben
                 }
                 else
@@ -107,12 +111,82 @@ namespace _240308_WPF_Client
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-
+            //Welches Element wurde geändert
+            var button = sender as Button;
+            var produkt = button?.Tag as Produkt;
+            if (produkt != null)
+            {
+                //Dialog öffnen
+                var inputDialog = new EditDialog(produkt.ProductName);
+                if (inputDialog.ShowDialog() == true)
+                {
+                    //Attribut ändern und PUT-Funktion aufrufen
+                    produkt.ProductName = inputDialog.EditedText;
+                    EditProduktItem(produkt);
+                }
+            }
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
+            //Welches Element wurde geändert
+            var checkBox = sender as CheckBox;
+            var produkt = checkBox?.DataContext as Produkt;
+            if (produkt != null)
+            {
+                //Attribut ändern und PUT-Funktion aufrufen
+                produkt.status = checkBox.IsChecked ?? false;
+                EditProduktItem(produkt);
+            }
+        }
 
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Welches Element soll gelöscht werden
+            var button = sender as Button;
+            var produkt = button?.Tag as Produkt;
+            if (produkt != null)
+            {
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        //Produkt mittels ID aus der Datenbank löschen
+                        HttpResponseMessage response = await client.DeleteAsync($"http://192.168.0.27:8080/api/produkt/{produkt.id}");
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            throw new Exception("Fehler beim Löschen des Produkts");
+                        }
+                        else
+                        {
+                            //aus Observable Collection entfernen
+                            produkts.Remove(produkt);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Fehler beim Löschen des Produkts: {ex.Message}");
+                    throw;
+                }  
+            }
+        }
+
+        private async void EditProduktItem(Produkt p)
+        {
+            try
+            {
+                // Produkt aktualisieren
+                HttpClient client = new HttpClient();
+                string json = JsonSerializer.Serialize(p);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PutAsync("http://192.168.0.27:8080/api/produkt", content);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Aktualisieren des Produkts: {ex.Message}");
+            }
         }
     }
 }
