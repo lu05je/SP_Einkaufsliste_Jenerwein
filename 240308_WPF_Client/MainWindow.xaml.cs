@@ -40,7 +40,7 @@ namespace _240308_WPF_Client
             {
                 //alle Produkte aus der Datenbank lesen
                 HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync("http://192.168.0.27:8080/api/produkte");
+                HttpResponseMessage response = await client.GetAsync("http://localhost:8080/api/produkte");
                 if (response.IsSuccessStatusCode)
                 {
                     //in Observable Collection speichern
@@ -88,7 +88,7 @@ namespace _240308_WPF_Client
                 HttpClient client = new HttpClient();
                 string json = JsonSerializer.Serialize(produkt);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync("http://192.168.0.27:8080/api/produkt", content);
+                HttpResponseMessage response = await client.PostAsync("http://localhost:8080/api/produkt", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -152,7 +152,7 @@ namespace _240308_WPF_Client
                     using (var client = new HttpClient())
                     {
                         //Produkt mittels ID aus der Datenbank löschen
-                        HttpResponseMessage response = await client.DeleteAsync($"http://192.168.0.27:8080/api/produkt/{produkt.id}");
+                        HttpResponseMessage response = await client.DeleteAsync($"http://localhost:8080/api/produkt/{produkt.id}");
                         if (!response.IsSuccessStatusCode)
                         {
                             throw new Exception("Fehler beim Löschen des Produkts");
@@ -180,7 +180,7 @@ namespace _240308_WPF_Client
                 HttpClient client = new HttpClient();
                 string json = JsonSerializer.Serialize(p);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync("http://192.168.0.27:8080/api/produkt", content);
+                HttpResponseMessage response = await client.PutAsync("http://localhost:8080/api/produkt", content);
 
             }
             catch (Exception ex)
