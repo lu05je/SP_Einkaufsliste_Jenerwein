@@ -31,39 +31,39 @@ Um auf die Web-App zu gelangen, muss der Spring-Boot Server gestartet sein. Mit 
 ![Startseite WebApp](Bilder_Doku/Startseite_WebApp.png) <br>
 Im Textfeld erfolgt die Eingabe des Produkts, welches man einkaufen muss.
 
-![Produkt eingegeben](image-10.png) <br>
+![Produkt eingegeben](Bilder_Doku/image-10.png) <br>
 Nach der Eingabe ist der ADD-Button oder die ENTER-Taste zu betätigen.
 
-![Produkt hinzugefügt](image-1.png) <br>
+![Produkt hinzugefügt](Bilder_Doku/image-1.png) <br>
 Nun erscheint das eingegebene Produkt in unserer Einkaufsliste. In der Datenbank wurde es ebenfalls gespeichert. Falls schon Produkte in der Datenbank gespeichert sind, werden diese natürlich am Anfang auch geladen und angezeigt.
 
 ### Produkt bearbeiten
 Mit Klick auf das Edit-Symbol kann man das vorhandene Produkt bearbeiten.
 
-![Edit-Button](image-2.png)
+![Edit-Button](Bilder_Doku/image-2.png)
 
-![Edit-Dialog](image-3.png) <br>
+![Edit-Dialog](Bilder_Doku/image-3.png) <br>
 Es öffnet sich ein eigener Dialog, in dem man den Produkttext nun anpassen kann.
 
-![Bearbeiteter Text](image-4.png) <br>
+![Bearbeiteter Text](Bilder_Doku/image-4.png) <br>
 Nach der Eingabe des neuen Textes ist der OK-Button zu betätigen. Beim Abbruch-Button kehrt man einfach wieder zur ursprünglichen Einkaufsliste zurück, ohne Veränderung.
 
-![Bearbeitetes Produkt](image-5.png) <br>
+![Bearbeitetes Produkt](Bilder_Doku/image-5.png) <br>
 Das Produkt wurde nun erfolgreich geändert und auf der Oberfläche sowie in der Datenbank aktualisiert.
 
 ### Produkt abhaken
 Wenn man das Produkt nun erfolgreich im Supermarkt erworben hat, kann man es mithilfe der grünen Checkbox abhaken:
 
-![Checkbox](image-7.png)
+![Checkbox](Bilder_Doku/image-7.png)
 
 
-![Abgehaktes Produkt](image-8.png) <br>
+![Abgehaktes Produkt](Bilder_Doku/image-8.png) <br>
 Die Checkbox wird nun ausgefüllt, der Text durchgestrichen und der Status des Produktes in der Datenbank aktualisiert.
 
 ### Produkt löschen
 Wenn man das Produkt, welches man vorher aufgeschrieben hat, nun doch nicht mehr benötigt, kann man es über den Delete-Button entfernen.
 
-![Delete-Button](image-9.png) <br>
+![Delete-Button](Bilder_Doku/image-9.png) <br>
 Durch das Betätigen dieses Buttons wird das Element sowohl auf der Oberfläche als auch in der Datenbank gelöscht.
 
 <br>
@@ -72,40 +72,40 @@ Durch das Betätigen dieses Buttons wird das Element sowohl auf der Oberfläche 
 Die WPF Anwendung bietet im Großen und Ganzen die gleichen Funktionen wie die Web-App. 
 
 ### Produkt zur Einkaufsliste hinzufügen
-![Startseite WPF-Anwendung](image-11.png) <br>
+![Startseite WPF-Anwendung](Bilder_Doku/image-11.png) <br>
 Im Textfeld erfolgt die Eingabe des Produkts, welches man einkaufen muss.
 
-![Produkt Eingabe](image-12.png) <br>
+![Produkt Eingabe](Bilder_Doku/image-12.png) <br>
 Nach der Eingabe ist der ADD-Button zu betätigen.
 
-![Produkt hinzufügen](image-13.png)
+![Produkt hinzufügen](Bilder_Doku/image-13.png)
 Nun erscheint das eingegebene Produkt in unserer Einkaufsliste. In der Datenbank wurde es ebenfalls gespeichert. Falls schon Produkte in der Datenbank gespeichert sind, werden diese natürlich am Anfang auch geladen und angezeigt.
 
 ### Produkt bearbeiten
 Mit Klick auf den Edit-Button kann man das vorhandene Produkt bearbeiten.
 
-![Edit-Button](image-14.png)
+![Edit-Button](Bilder_Doku/image-14.png)
 
-![Edit Dialog](image-15.png) <br> 
+![Edit Dialog](Bilder_Doku/image-15.png) <br> 
 Es öffnet sich ein eigener Dialog, in dem man den Produkttext nun anpassen kann.
 
-![alt text](image-16.png) <br>
+![alt text](Bilder_Doku/image-16.png) <br>
 Nach der Eingabe des neuen Textes ist der Save-Button zu betätigen. Beim Schliessen des Dialogs kehrt man einfach wieder zur ursprünglichen Einkaufsliste zurück, ohne Veränderung.
 
-![Besrbeitetes Produkt](image-17.png) <br>
+![Besrbeitetes Produkt](Bilder_Doku/image-17.png) <br>
 Das Produkt wurde nun erfolgreich geändert und auf der Oberfläche sowie in der Datenbank aktualisiert.
 
 ### Produkt abhaken
 Wenn man das Produkt nun erfolgreich im Supermarkt erworben hat, kann man es mithilfe der Checkbox abhaken:
 
 
-![Abgehaktes Produkt](image-18.png) <br>
+![Abgehaktes Produkt](Bilder_Doku/image-18.png) <br>
 Die Checkbox wird nun ausgefüllt und der Status des Produktes in der Datenbank aktualisiert.
 
 ### Produkt löschen
 Wenn man das Produkt, welches man vorher aufgeschrieben hat, nun doch nicht mehr benötigt, kann man es über den Delete-Button entfernen.
 
-![Delete-Button](image-19.png) <br>
+![Delete-Button](Bilder_Doku/image-19.png) <br>
 Durch das Betätigen dieses Buttons wird das Element sowohl auf der Oberfläche als auch in der Datenbank gelöscht.
 
 <br>
