@@ -32,13 +32,59 @@ function addProdukt() {
         saveProdukte(produktObject, function(error) {
             if (error) {
                 console.error('Fehler beim Speichern des Produkts:', error);
-                // Fehlerbehandlung
             } else {
                 // Nachdem das Produkt gespeichert wurde, die Oberfläche aktualisieren
                 update();
                 produktInput.value = "";
             }
         });
+    }
+}
+
+function saveProdukte(produktObject, callback) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/produkt', true);     //true -> asynchron
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            // Erfolgreiche Anfrage
+            callback(null); // null -> kein Fehler aufgetreten
+        }
+        else {
+            // Anfrage fehlgeschlagen
+            callback(xhr.statusText);
+        }
+    };
+    xhr.onerror = function () {
+        // Fehler bei der Anfrage
+        callback(xhr.statusText);
+    };
+
+    xhr.send(produktObject);    //Anfrage an Server senden
+}
+
+async function update() {
+    try {
+        await getDatenFromMongoDB().then(r => updateProduktList()); // Daten aus MongoDB abrufen & Oberfläche aktualisieren
+    }
+    catch (error) {
+        console.error('Fehler beim Abrufen der Daten:', error);
+    }
+}
+
+async function getDatenFromMongoDB() {
+    try {
+        //alle Produkte aus der Datenbank lesen und in allProdukte speichern
+        const response = await fetch('/api/produkte');
+        if (!response.ok) {
+            throw new Error('Fehler beim Abrufen der Daten');
+        }
+        allProdukte = await response.json();
+    }
+    catch (error) {
+        console.error('Fehler beim Abrufen der Daten:', error);
+        throw error;
     }
 }
 
@@ -182,52 +228,5 @@ async function editProduktItem(produkt){
     catch (error) {
         console.error('Fehler beim Aktualisieren des Produkts:', error);
         throw error;
-    }
-}
-
-function saveProdukte(produktObject, callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/produkt', true);     //true -> asynchron
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onload = function () {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            // Erfolgreiche Anfrage
-            callback(null); // null -> kein Fehler aufgetreten
-        }
-        else {
-            // Anfrage fehlgeschlagen
-            callback(xhr.statusText);
-        }
-    };
-    xhr.onerror = function () {
-        // Fehler bei der Anfrage
-        callback(xhr.statusText);
-    };
-
-    xhr.send(produktObject);    //Anfrage an Server senden
-}
-
-async function getDatenFromMongoDB() {
-    try {
-        //alle Produkte aus der Datenbank lesen und in allProdukte speichern
-        const response = await fetch('/api/produkte');
-        if (!response.ok) {
-            throw new Error('Fehler beim Abrufen der Daten');
-        }
-        allProdukte = await response.json();
-    }
-    catch (error) {
-        console.error('Fehler beim Abrufen der Daten:', error);
-        throw error;
-    }
-}
-
-async function update() {
-    try {
-        await getDatenFromMongoDB().then(r => updateProduktList()); // Daten aus MongoDB abrufen & Oberfläche aktualisieren
-    }
-    catch (error) {
-        console.error('Fehler beim Abrufen der Daten:', error);
     }
 }

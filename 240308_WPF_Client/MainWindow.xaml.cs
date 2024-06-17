@@ -188,5 +188,11 @@ namespace _240308_WPF_Client
                 MessageBox.Show($"Fehler beim Aktualisieren des Produkts: {ex.Message}");
             }
         }
+
+        private void refreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            produkts.Clear();
+            LoadProdukte();
+        }
     }
 }

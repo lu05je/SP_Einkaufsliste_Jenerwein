@@ -28,18 +28,18 @@ public class ProduktController {
         return produktService.save(ProduktDTO);
     }
 
-    @PostMapping("produkte")
+    /*@PostMapping("produkte")
     @ResponseStatus(HttpStatus.CREATED)
     public List<ProduktDTO> postProdukte(@RequestBody List<ProduktDTO> personEntities) {
         return produktService.saveAll(personEntities);
-    }
+    }*/
 
     @GetMapping("produkte")
     public List<ProduktDTO> getProdukte() {
         return produktService.findAll();
     }
 
-    @GetMapping("produkt/{id}")
+    /*@GetMapping("produkt/{id}")
     public ResponseEntity<ProduktDTO> getProdukt(@PathVariable String id) {
         ProduktDTO ProduktDTO = produktService.findOne(id);
         if (ProduktDTO == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -55,14 +55,14 @@ public class ProduktController {
     @GetMapping("produkte/count")
     public Long getCount() {
         return produktService.count();
-    }
+    }*/
 
     @DeleteMapping("produkt/{id}")
     public Long deleteProdukt(@PathVariable String id) {
         return produktService.delete(id);
     }
 
-    @DeleteMapping("produkte/{ids}")
+    /*@DeleteMapping("produkte/{ids}")
     public Long deleteProdukte(@PathVariable String ids) {
         List<String> listIds = List.of(ids.split(","));
         return produktService.delete(listIds);
@@ -71,17 +71,17 @@ public class ProduktController {
     @DeleteMapping("produkte")
     public Long deleteProdukte() {
         return produktService.deleteAll();
-    }
+    }*/
 
     @PutMapping("produkt")
     public ProduktDTO putProdukt(@RequestBody ProduktDTO ProduktDTO) {
         return produktService.update(ProduktDTO);
     }
 
-    @PutMapping("produkte")
+    /*@PutMapping("produkte")
     public Long putProdukt(@RequestBody List<ProduktDTO> personEntities) {
         return produktService.update(personEntities);
-    }
+    }*/
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
