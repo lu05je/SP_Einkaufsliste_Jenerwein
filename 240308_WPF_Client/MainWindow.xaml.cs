@@ -181,6 +181,10 @@ namespace _240308_WPF_Client
                 string json = JsonSerializer.Serialize(p);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync("http://localhost:8080/api/produkt", content);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception("Fehler beim Löschen des Produkts");
+                }
 
             }
             catch (Exception ex)

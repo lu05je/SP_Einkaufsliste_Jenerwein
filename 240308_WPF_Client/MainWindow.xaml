@@ -12,7 +12,7 @@
 
         <TextBox x:Name="produktTextBox" Width="350" Height="30" Margin="225,25,225,347" FontSize="16"/>
         <Button x:Name="addButton" Content="ADD" Width="70" Height="30" Click="AddButton_Click" Margin="505,25,225,347" FontSize="16"/>
-        <Button x:Name="refreshButton" Content="Refresh" Width="70" Height="30" Margin="620,25,180,347" Click="refreshButton_Click"/>
+        <Button x:Name="refreshButton" Content="Refresh" Width="70" Height="30" Margin="620,25,180,347" Click="refreshButton_Click" FontSize="16"/>
 
         <ItemsControl Name="ItemsList" Margin="30, 110, 30, 10">
             <ItemsControl.ItemTemplate>
